@@ -3,31 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ClipMate — Clipboard Manager for macOS</title>
-  <meta name="description" content="The clipboard manager macOS deserves. Track every copy, capture any screen region, and paste instantly — all from your menu bar." />
+  <title>ClipMate — macOS Clipboard Manager | $5 One-Time</title>
+  <meta name="description" content="Never lose a copied snippet again. ClipMate keeps your last 50 clipboard items — text, code, and images — one shortcut away. $5 one-time, macOS 13+." />
+  <meta name="keywords" content="clipboard manager mac, macos clipboard history, clipboard app mac, copy paste history mac, clipboard manager macos ventura" />
 
-  <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ClipMate — macOS Clipboard Manager" />
+  <meta property="og:description" content="⌘V only remembers one thing. ClipMate remembers 50. $5 one-time for macOS." />
+  <meta property="og:url" content="https://clipmate.app/" />
+  <meta property="og:image" content="https://clipmate.app/og-image.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ClipMate — macOS Clipboard Manager" />
+  <meta name="twitter:description" content="⌘V only remembers one thing. ClipMate remembers 50. $5 one-time for macOS." />
+
+  <link rel="canonical" href="https://clipmate.app/" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FF5C00'/><text y='.85em' font-size='68' x='15'>📋</text></svg>" />
+
+  <!-- Structured data: Product -->
+  <script type="application/ld+json">{"@context":"https://schema.org/","@type":"SoftwareApplication","name":"ClipMate","operatingSystem":"macOS 13 Ventura or later","applicationCategory":"UtilitiesApplication","offers":{"@type":"Offer","price":"5.00","priceCurrency":"USD"},"description":"Lightweight clipboard manager for macOS. Track 50 items, global hotkey recall, built-in screen capture. 100% local.","aggregateRating":{"@type":"AggregateRating","ratingValue":"5","reviewCount":"3","bestRating":"5"}}</script>
+
+  <!-- Structured data: FAQ -->
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What macOS version does ClipMate require?","acceptedAnswer":{"@type":"Answer","text":"ClipMate requires macOS 13 Ventura or later. It is a native Swift app."}},{"@type":"Question","name":"Does ClipMate send my clipboard data anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. ClipMate stores everything in memory on your device only. Nothing is uploaded or shared."}},{"@type":"Question","name":"Will ClipMate slow down my Mac?","acceptedAnswer":{"@type":"Answer","text":"No. ClipMate uses under 5 MB of RAM and has negligible CPU overhead."}},{"@type":"Question","name":"Can I use ClipMate on multiple Macs?","acceptedAnswer":{"@type":"Answer","text":"Yes. One $5 purchase covers personal use on all your own Macs."}}]}</script>
 
   <style>
-    /* ─── Reset & tokens ─────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:          #09090b;
-      --bg-2:        #111113;
-      --bg-3:        #18181b;
-      --border:      rgba(255,255,255,.08);
-      --border-2:    rgba(255,255,255,.14);
-      --text:        #fafafa;
-      --text-2:      #a1a1aa;
-      --text-3:      #71717a;
-      --accent:      #6366f1;
-      --accent-2:    #818cf8;
-      --accent-glow: rgba(99,102,241,.35);
-      --green:       #22c55e;
-      --radius:      14px;
-      --font:        -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+      --bg:           #0A0A0A;
+      --bg-1:         #111111;
+      --bg-2:         #191919;
+      --bg-3:         #242424;
+      --border:       rgba(255,255,255,.065);
+      --border-2:     rgba(255,255,255,.12);
+      --text:         #F0F0F0;
+      --text-2:       #888888;
+      --text-3:       #444444;
+      --accent:       #FF5C00;
+      --accent-2:     #FF7A29;
+      --accent-glow:  rgba(255,92,0,.28);
+      --green:        #00E676;
+      --font:         -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      --mono:         "SF Mono", "JetBrains Mono", "Fira Code", "Courier New", monospace;
     }
 
     html { scroll-behavior: smooth; }
@@ -41,839 +60,883 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ─── Noise texture overlay ──────────────────────────────────── */
+    /* ─── Grain overlay ────────────────────────────────────── */
     body::before {
       content: "";
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      opacity: .025;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: .018;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
-    /* ─── Nav ────────────────────────────────────────────────────── */
+    /* ─── Nav ─────────────────────────────────────────────── */
     nav {
-      position: sticky; top: 0; z-index: 100;
+      position: sticky; top: 0; z-index: 200;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 5vw;
-      height: 64px;
-      background: rgba(9,9,11,.85);
-      backdrop-filter: blur(16px);
+      padding: 0 5vw; height: 58px;
+      background: rgba(10,10,10,.88);
+      backdrop-filter: blur(20px) saturate(160%);
       border-bottom: 1px solid var(--border);
     }
     .nav-logo {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 1.1rem; font-weight: 700; letter-spacing: -.02em;
+      display: flex; align-items: center; gap: 9px;
+      font-size: .95rem; font-weight: 700; letter-spacing: -.02em;
       text-decoration: none; color: var(--text);
     }
-    .nav-logo span { font-size: 1.4rem; }
-    .nav-links { display: flex; align-items: center; gap: 28px; }
-    .nav-links a {
-      color: var(--text-2); text-decoration: none; font-size: .875rem;
-      transition: color .2s;
+    .nav-logo-icon {
+      width: 27px; height: 27px; border-radius: 7px;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .82rem; flex-shrink: 0;
     }
-    .nav-links a:hover { color: var(--text); }
+    .nav-links { display: flex; align-items: center; gap: 4px; }
+    .nav-links a {
+      padding: 6px 11px; border-radius: 6px;
+      color: var(--text-2); text-decoration: none; font-size: .82rem;
+      transition: color .18s, background .18s;
+    }
+    .nav-links a:hover { color: var(--text); background: rgba(255,255,255,.05); }
     .btn-nav {
-      padding: 8px 18px; border-radius: 8px; font-size: .875rem; font-weight: 600;
+      padding: 7px 15px; border-radius: 7px; font-size: .82rem; font-weight: 700;
       background: var(--accent); color: #fff; text-decoration: none;
-      transition: background .2s, transform .15s;
+      transition: background .18s, transform .14s;
+      letter-spacing: -.01em;
     }
     .btn-nav:hover { background: var(--accent-2); transform: translateY(-1px); }
 
-    /* ─── Hero ───────────────────────────────────────────────────── */
+    /* ─── Hero ─────────────────────────────────────────────── */
+    .hero-wrap { position: relative; overflow: hidden; }
     .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+      padding: 88px 5vw 88px;
+      max-width: 1200px;
+      margin: 0 auto;
+      min-height: calc(100vh - 58px);
       position: relative; z-index: 1;
-      display: flex; flex-direction: column; align-items: center;
-      text-align: center;
-      padding: 110px 5vw 80px;
-      overflow: hidden;
+    }
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; padding: 56px 5vw 60px; }
+      .hero-visual { display: none; }
     }
 
-    /* radial gradient backdrop */
-    .hero::before {
-      content: "";
-      position: absolute; inset: 0; z-index: -1;
-      background:
-        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,.22) 0%, transparent 70%),
-        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(129,140,248,.08) 0%, transparent 60%);
-    }
-
-    .hero-badge {
+    .hero-tag {
       display: inline-flex; align-items: center; gap: 7px;
-      padding: 5px 14px; border-radius: 100px;
-      background: rgba(99,102,241,.12);
-      border: 1px solid rgba(99,102,241,.3);
-      color: var(--accent-2); font-size: .78rem; font-weight: 600;
-      letter-spacing: .03em; text-transform: uppercase;
-      margin-bottom: 28px;
-      animation: fadeUp .6s ease both;
+      padding: 4px 11px; border-radius: 6px;
+      background: rgba(255,92,0,.1); border: 1px solid rgba(255,92,0,.22);
+      color: var(--accent-2); font-size: .7rem; font-weight: 800;
+      letter-spacing: .09em; text-transform: uppercase;
+      margin-bottom: 30px;
     }
-    .hero-badge .dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 6px var(--green);
+    .hero-tag .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 7px var(--accent);
       animation: pulse 2s infinite;
     }
 
-    h1 {
-      font-size: clamp(2.6rem, 6vw, 5rem);
-      font-weight: 800; line-height: 1.08;
-      letter-spacing: -.04em;
-      max-width: 780px;
-      animation: fadeUp .6s .1s ease both;
+    .hero-headline {
+      font-size: clamp(2.6rem, 5.2vw, 4.6rem);
+      font-weight: 800; line-height: 1.05; letter-spacing: -.045em;
+      margin-bottom: 24px;
     }
-    h1 em {
-      font-style: normal;
-      background: linear-gradient(135deg, #818cf8 0%, #6366f1 40%, #a78bfa 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
+    .hl-dim    { color: var(--text-2); }
+    .hl-accent { color: var(--accent); }
 
     .hero-sub {
-      margin-top: 22px; max-width: 540px;
-      color: var(--text-2); font-size: 1.125rem; line-height: 1.7;
-      animation: fadeUp .6s .2s ease both;
+      font-size: 1.05rem; color: var(--text-2); line-height: 1.72;
+      max-width: 430px; margin-bottom: 36px;
     }
+    .hero-sub strong { color: var(--text); }
 
-    .hero-cta {
-      display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
-      margin-top: 40px;
-      animation: fadeUp .6s .3s ease both;
-    }
+    .hero-cta { display: flex; gap: 11px; flex-wrap: wrap; margin-bottom: 22px; }
+
     .btn-primary {
-      display: inline-flex; align-items: center; gap: 9px;
-      padding: 14px 30px; border-radius: 10px; font-size: 1rem; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 24px; border-radius: 9px; font-size: .93rem; font-weight: 700;
       background: var(--accent); color: #fff; text-decoration: none;
-      box-shadow: 0 0 32px var(--accent-glow);
-      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 0 40px var(--accent-glow), 0 4px 14px rgba(255,92,0,.28);
+      transition: background .18s, transform .14s, box-shadow .18s;
+      letter-spacing: -.01em;
     }
     .btn-primary:hover {
-      background: #5558e3; transform: translateY(-2px);
-      box-shadow: 0 0 48px var(--accent-glow);
+      background: var(--accent-2); transform: translateY(-2px);
+      box-shadow: 0 0 60px var(--accent-glow), 0 8px 22px rgba(255,92,0,.32);
     }
     .btn-ghost {
-      display: inline-flex; align-items: center; gap: 9px;
-      padding: 14px 30px; border-radius: 10px; font-size: 1rem; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 24px; border-radius: 9px; font-size: .93rem; font-weight: 600;
       border: 1px solid var(--border-2); color: var(--text-2);
       text-decoration: none; background: transparent;
-      transition: border-color .2s, color .2s, transform .15s;
+      transition: border-color .18s, color .18s, transform .14s;
     }
-    .btn-ghost:hover { border-color: var(--text-3); color: var(--text); transform: translateY(-2px); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,.2); color: var(--text); transform: translateY(-2px); }
 
-    .hero-meta {
-      margin-top: 18px; color: var(--text-3); font-size: .82rem;
-      animation: fadeUp .6s .4s ease both;
+    .hero-trust {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px;
+      font-size: .76rem; color: var(--text-3);
     }
-    .hero-meta strong { color: var(--text-2); }
+    .trust-item { display: flex; align-items: center; gap: 5px; }
+    .trust-check { color: var(--green); }
+    .trust-sep { color: var(--text-3); opacity: .4; }
 
-    /* ─── App mockup ─────────────────────────────────────────────── */
-    .mockup-wrap {
-      position: relative; z-index: 1;
-      margin: 64px auto 0; max-width: 680px; width: 92vw;
-      animation: fadeUp .7s .5s ease both;
+    /* ─── Mockup ─────────────────────────────────────────────── */
+    .hero-visual {
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
     }
-    .mockup-glow {
-      position: absolute; inset: -40px;
-      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(99,102,241,.18) 0%, transparent 70%);
+    .hero-glow {
+      position: absolute; inset: -100px;
+      background: radial-gradient(ellipse 55% 55% at 50% 50%, rgba(255,92,0,.07) 0%, transparent 70%);
       pointer-events: none;
     }
-    .mockup {
-      position: relative;
-      background: var(--bg-3);
+
+    .app-window {
+      width: 100%; max-width: 360px;
+      background: var(--bg-1);
       border: 1px solid var(--border-2);
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 40px 120px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.04);
+      box-shadow: 0 40px 100px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.03);
     }
-    /* Title bar */
-    .mockup-bar {
-      display: flex; align-items: center; gap: 8px;
-      padding: 12px 16px;
-      background: rgba(255,255,255,.03);
+    .win-bar {
+      display: flex; align-items: center; gap: 7px;
+      padding: 11px 14px;
+      background: rgba(255,255,255,.022);
       border-bottom: 1px solid var(--border);
     }
-    .mock-dot { width: 12px; height: 12px; border-radius: 50%; }
-    .mock-dot.r { background: #ff5f57; }
-    .mock-dot.y { background: #ffbd2e; }
-    .mock-dot.g { background: #28ca41; }
-    .mockup-title {
-      flex: 1; text-align: center; font-size: .78rem; color: var(--text-3); font-weight: 500;
-      letter-spacing: .01em;
-    }
+    .win-dot { width: 11px; height: 11px; border-radius: 50%; }
+    .win-dot.r { background: #FF5F57; }
+    .win-dot.y { background: #FEBC2E; }
+    .win-dot.g { background: #28C840; }
+    .win-title { flex: 1; text-align: center; font-size: .7rem; color: var(--text-3); font-weight: 500; }
 
-    /* Search bar */
-    .mock-search {
+    .win-search {
       display: flex; align-items: center; gap: 8px;
-      margin: 14px 14px 10px;
-      padding: 9px 12px;
-      background: rgba(255,255,255,.05);
+      margin: 10px;
+      padding: 8px 10px;
+      background: rgba(255,255,255,.04);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text-3); font-size: .82rem;
+      border-radius: 7px;
+      font-size: .76rem; color: var(--text-3);
     }
-    .mock-search svg { flex-shrink: 0; }
 
-    /* Clipboard items */
-    .mock-items { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 3px; }
-    .mock-item {
-      display: flex; align-items: center; gap: 12px;
-      padding: 10px 10px;
-      border-radius: 8px;
+    .clip-list {
+      padding: 4px 8px;
+      display: flex; flex-direction: column; gap: 2px;
+      min-height: 220px;
+      overflow: hidden;
+    }
+    .clip-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 7px; border-radius: 7px;
       cursor: pointer;
-      transition: background .15s;
+      transition: background .14s;
+      animation: clipSlideIn .32s cubic-bezier(.22,1,.36,1) both;
     }
-    .mock-item:first-child, .mock-item.active { background: rgba(99,102,241,.14); }
-    .mock-item:hover { background: rgba(255,255,255,.05); }
-    .mock-icon {
-      width: 36px; height: 30px; border-radius: 5px;
-      background: rgba(255,255,255,.07);
+    .clip-item.is-top {
+      background: rgba(255,92,0,.09);
+      border: 1px solid rgba(255,92,0,.14);
+    }
+    .clip-item:not(.is-top):hover { background: rgba(255,255,255,.04); }
+
+    .clip-thumb {
+      width: 30px; height: 26px; border-radius: 5px;
+      background: var(--bg-3); flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; font-size: .9rem;
+      font-size: .78rem;
     }
-    .mock-img-icon {
-      width: 36px; height: 30px; border-radius: 5px;
-      object-fit: cover; flex-shrink: 0;
-      background: linear-gradient(135deg, #6366f1 0%, #a78bfa 100%);
-    }
-    .mock-text { flex: 1; }
-    .mock-text .mt { font-size: .82rem; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .mock-text .ms { font-size: .7rem; color: var(--text-3); margin-top: 1px; }
-    .mock-tag {
-      font-size: .65rem; padding: 2px 7px; border-radius: 4px;
-      background: rgba(99,102,241,.2); color: var(--accent-2);
-    }
+    .clip-thumb.code { background: rgba(255,92,0,.12); }
+    .clip-thumb.url  { background: rgba(59,130,246,.12); }
+    .clip-thumb.img  { background: linear-gradient(135deg, #6366f1, #a78bfa); }
 
-    /* Snip button */
-    .mock-snip-bar {
+    .clip-body { flex: 1; min-width: 0; }
+    .clip-main {
+      font-size: .72rem; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      font-family: var(--mono);
+    }
+    .clip-meta { font-size: .62rem; color: var(--text-3); margin-top: 1px; }
+
+    .clip-badge {
+      font-size: .58rem; padding: 2px 6px; border-radius: 4px;
+      font-weight: 700; flex-shrink: 0; text-transform: uppercase; letter-spacing: .04em;
+    }
+    .badge-code { background: rgba(255,92,0,.14); color: var(--accent-2); }
+    .badge-url  { background: rgba(59,130,246,.14); color: #93bbfd; }
+    .badge-img  { background: rgba(167,139,250,.14); color: #c4b5fd; }
+    .badge-text { background: rgba(255,255,255,.06); color: var(--text-2); }
+
+    .win-footer {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 14px;
-      border-top: 1px solid var(--border);
-      background: rgba(255,255,255,.015);
+      padding: 8px 12px; border-top: 1px solid var(--border);
+      background: rgba(255,255,255,.012);
     }
-    .mock-snip-label { font-size: .72rem; color: var(--text-3); }
-    .mock-snip-btn {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 5px 12px; border-radius: 6px; font-size: .75rem; font-weight: 600;
-      background: rgba(99,102,241,.18); color: var(--accent-2);
-      border: 1px solid rgba(99,102,241,.3);
+    .win-count { font-size: .65rem; color: var(--text-3); }
+    .win-snip {
+      display: flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 5px; font-size: .68rem; font-weight: 700;
+      background: var(--bg-3); border: 1px solid var(--border-2); color: var(--text-2);
+      cursor: pointer; transition: background .14s, color .14s, border-color .14s;
     }
+    .win-snip:hover { background: rgba(255,92,0,.13); color: var(--accent-2); border-color: rgba(255,92,0,.2); }
 
-    /* ─── Keyboard badge ─────────────────────────────────────────── */
-    .kbd-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      margin-top: 36px;
-      animation: fadeUp .6s .6s ease both;
+    .shortcut-badge {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      margin-top: 18px;
     }
     kbd {
       display: inline-flex; align-items: center; justify-content: center;
-      padding: 5px 10px; border-radius: 6px; font-size: .8rem; font-weight: 600;
-      background: var(--bg-3); border: 1px solid var(--border-2);
+      padding: 4px 9px; border-radius: 5px; font-size: .76rem; font-weight: 600;
+      background: var(--bg-2); border: 1px solid var(--border-2);
       color: var(--text-2); font-family: var(--font);
-      box-shadow: 0 2px 0 rgba(0,0,0,.4);
+      box-shadow: 0 2px 0 rgba(0,0,0,.5);
     }
-    .kbd-label { color: var(--text-3); font-size: .82rem; }
+    .shortcut-label { font-size: .75rem; color: var(--text-3); }
 
-    /* ─── Logos / social proof ───────────────────────────────────── */
-    .proof {
-      position: relative; z-index: 1;
-      text-align: center; padding: 48px 5vw;
+    /* ─── Stats bar ───────────────────────────────────────────── */
+    .stats-bar {
       border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 30px 5vw;
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 0;
+      position: relative; z-index: 1;
     }
-    .proof-label { font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; color: var(--text-3); }
-    .proof-stats {
-      display: flex; justify-content: center; flex-wrap: wrap; gap: 48px;
-      margin-top: 28px;
+    .stat {
+      text-align: center;
+      padding: 8px 48px;
+      border-right: 1px solid var(--border);
     }
-    .stat-num { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; }
-    .stat-num span {
-      background: linear-gradient(135deg, #818cf8, #6366f1);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    .stat:last-child { border-right: none; }
+    @media (max-width: 700px) {
+      .stat { border-right: none; padding: 12px 24px; }
     }
-    .stat-label { font-size: .8rem; color: var(--text-3); margin-top: 3px; }
+    .stat-num {
+      font-size: 2rem; font-weight: 900; letter-spacing: -.04em;
+      color: var(--accent); line-height: 1;
+    }
+    .stat-label {
+      font-size: .68rem; color: var(--text-3); margin-top: 4px;
+      text-transform: uppercase; letter-spacing: .1em;
+    }
 
-    /* ─── Features ───────────────────────────────────────────────── */
-    .section { position: relative; z-index: 1; padding: 96px 5vw; }
-    .section-label {
-      text-align: center; font-size: .75rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: .12em;
-      color: var(--accent-2); margin-bottom: 14px;
+    /* ─── Interrupt ───────────────────────────────────────────── */
+    .interrupt {
+      padding: 100px 5vw;
+      text-align: center;
+      position: relative; z-index: 1;
+      overflow: hidden;
     }
-    .section-title {
-      text-align: center; font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-      font-weight: 800; letter-spacing: -.03em; line-height: 1.15;
+    .interrupt::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(255,92,0,.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .interrupt-hl {
+      font-size: clamp(1.55rem, 3.2vw, 2.6rem);
+      font-weight: 800; letter-spacing: -.03em; line-height: 1.3;
+      max-width: 760px; margin: 0 auto;
+    }
+    .interrupt-hl .hi { color: var(--accent); }
+    .interrupt-sub {
+      margin-top: 16px;
+      font-size: .98rem; color: var(--text-2); line-height: 1.7;
+      max-width: 480px; margin-left: auto; margin-right: auto;
+    }
+
+    /* ─── Shared section layout ───────────────────────────────── */
+    .section {
+      padding: 96px 5vw;
+      max-width: 1200px; margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+    .section-eyebrow {
+      font-size: .68rem; font-weight: 800; letter-spacing: .15em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .section-heading {
+      font-size: clamp(1.75rem, 3.2vw, 2.6rem);
+      font-weight: 800; letter-spacing: -.03em; line-height: 1.1;
     }
     .section-sub {
-      text-align: center; margin-top: 14px; max-width: 520px; margin-left: auto; margin-right: auto;
-      color: var(--text-2); font-size: 1.05rem; line-height: 1.65;
+      margin-top: 12px;
+      font-size: 1rem; color: var(--text-2); line-height: 1.68;
+      max-width: 500px;
     }
 
-    .features-grid {
+    /* ─── Features ────────────────────────────────────────────── */
+    .features-wrap { border-top: 1px solid var(--border); }
+
+    .feat-grid {
+      margin-top: 52px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px; margin-top: 56px;
-    }
-    .feature-card {
-      background: var(--bg-2);
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px;
-      transition: border-color .2s, transform .2s, box-shadow .2s;
-    }
-    .feature-card:hover {
-      border-color: var(--border-2);
-      transform: translateY(-4px);
-      box-shadow: 0 20px 60px rgba(0,0,0,.4);
-    }
-    .feature-icon {
-      width: 48px; height: 48px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem; margin-bottom: 18px;
-    }
-    .ic-purple { background: rgba(99,102,241,.15); }
-    .ic-blue   { background: rgba(59,130,246,.15); }
-    .ic-green  { background: rgba(34,197,94,.15); }
-    .ic-pink   { background: rgba(236,72,153,.15); }
-    .ic-orange { background: rgba(249,115,22,.15); }
-    .ic-yellow { background: rgba(234,179,8,.15); }
-
-    .feature-card h3 {
-      font-size: 1.05rem; font-weight: 700; letter-spacing: -.01em;
-      margin-bottom: 10px;
-    }
-    .feature-card p { font-size: .9rem; color: var(--text-2); line-height: 1.65; }
-
-    /* ─── How it works ───────────────────────────────────────────── */
-    .steps-wrap {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 0; margin-top: 56px;
-      border: 1px solid var(--border); border-radius: var(--radius);
+      border-radius: 16px;
       overflow: hidden;
     }
-    .step {
+    @media (max-width: 900px) { .feat-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .feat-grid { grid-template-columns: 1fr; } }
+
+    .feat {
+      background: var(--bg-1);
       padding: 32px 28px;
-      border-right: 1px solid var(--border);
-      background: var(--bg-2);
+      transition: background .18s;
     }
-    .step:last-child { border-right: none; }
-    .step-num {
-      font-size: 2.2rem; font-weight: 900; letter-spacing: -.05em;
-      background: linear-gradient(135deg, #6366f1, #a78bfa);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      line-height: 1; margin-bottom: 16px;
+    .feat:hover { background: var(--bg-2); }
+    .feat-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: rgba(255,92,0,.1); border: 1px solid rgba(255,92,0,.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; margin-bottom: 20px;
     }
-    .step h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
-    .step p  { font-size: .875rem; color: var(--text-2); line-height: 1.6; }
+    .feat h3 { font-size: .92rem; font-weight: 700; letter-spacing: -.01em; margin-bottom: 7px; }
+    .feat p  { font-size: .83rem; color: var(--text-2); line-height: 1.65; }
 
-    /* ─── Snip demo section ──────────────────────────────────────── */
-    .snip-demo {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
-      align-items: center; margin-top: 64px;
+    /* ─── Snip spotlight ──────────────────────────────────────── */
+    .spotlight {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: center;
+      margin-top: 80px; padding-top: 80px;
+      border-top: 1px solid var(--border);
     }
-    @media (max-width: 800px) { .snip-demo { grid-template-columns: 1fr; } }
+    @media (max-width: 800px) { .spotlight { grid-template-columns: 1fr; gap: 36px; } }
 
-    .snip-screen {
+    .spot-visual {
       position: relative;
-      background: var(--bg-3);
+      background: var(--bg-1);
       border: 1px solid var(--border-2);
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
       aspect-ratio: 16/10;
-      display: flex; align-items: center; justify-content: center;
     }
-    .snip-overlay {
+    .spot-bg {
       position: absolute; inset: 0;
-      background: rgba(0,0,0,.42);
-      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #0c0c2a 0%, #17103a 50%, #0c0c2a 100%);
     }
-    .snip-selection {
+    .spot-code {
+      position: absolute; top: 12%; left: 7%;
+      font-family: var(--mono); font-size: .6rem;
+      color: rgba(255,255,255,.22); line-height: 1.9;
+    }
+    .spot-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.44); }
+    .spot-sel {
       position: absolute;
-      top: 25%; left: 20%; width: 55%; height: 45%;
-      border: 2px solid #6366f1;
-      box-shadow: 0 0 0 9999px rgba(0,0,0,.42);
+      top: 22%; left: 17%; width: 59%; height: 48%;
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 0 9999px rgba(0,0,0,.4);
       animation: selPulse 3s ease-in-out infinite;
     }
-    .snip-selection::before, .snip-selection::after,
-    .snip-selection .corner-br, .snip-selection .corner-bl {
-      content: ""; position: absolute;
-      width: 12px; height: 12px;
+    .spot-corner {
+      position: absolute; width: 10px; height: 10px;
       border-color: #fff; border-style: solid;
     }
-    .snip-selection::before { top: -2px; left: -2px; border-width: 3px 0 0 3px; }
-    .snip-selection::after  { top: -2px; right: -2px; border-width: 3px 3px 0 0; }
-    .snip-selection .corner-bl { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; }
-    .snip-selection .corner-br { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; }
-    .snip-dim-label {
-      position: absolute; top: calc(25% - 28px); left: 20%;
-      font-size: .72rem; font-weight: 600;
-      background: rgba(0,0,0,.7); color: #fff;
-      padding: 3px 8px; border-radius: 4px;
-      font-family: 'SF Mono', monospace;
+    .spot-corner.tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+    .spot-corner.tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+    .spot-corner.bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+    .spot-corner.br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+    .spot-dims {
+      position: absolute; top: calc(22% - 23px); left: 17%;
+      font-size: .62rem; font-weight: 700; font-family: var(--mono);
+      background: rgba(0,0,0,.75); color: rgba(255,255,255,.9);
+      padding: 2px 7px; border-radius: 4px;
     }
-    .snip-hint {
-      position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
-      font-size: .72rem; color: rgba(255,255,255,.6);
-      background: rgba(0,0,0,.6); padding: 5px 14px; border-radius: 20px;
+    .spot-hint {
+      position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+      font-size: .62rem; color: rgba(255,255,255,.5);
+      background: rgba(0,0,0,.6); padding: 4px 12px; border-radius: 20px;
       white-space: nowrap;
     }
 
-    .snip-text h3 {
-      font-size: 1.7rem; font-weight: 800; letter-spacing: -.03em; line-height: 1.2;
-      margin-bottom: 16px;
+    .spot-text h3 {
+      font-size: clamp(1.5rem, 2.4vw, 2rem);
+      font-weight: 800; letter-spacing: -.03em; line-height: 1.15; margin-bottom: 14px;
     }
-    .snip-text p { color: var(--text-2); line-height: 1.7; margin-bottom: 14px; }
-    .snip-bullets { list-style: none; }
-    .snip-bullets li {
+    .spot-text p { font-size: .88rem; color: var(--text-2); line-height: 1.75; margin-bottom: 12px; }
+    .check-list { list-style: none; margin-top: 8px; }
+    .check-list li {
       display: flex; align-items: flex-start; gap: 10px;
-      font-size: .9rem; color: var(--text-2); margin-bottom: 10px;
+      font-size: .86rem; color: var(--text-2); padding: 5px 0;
     }
-    .snip-bullets li::before {
-      content: "✓";
-      flex-shrink: 0; margin-top: 1px;
-      width: 18px; height: 18px; border-radius: 50%;
-      background: rgba(34,197,94,.15); color: var(--green);
-      display: flex; align-items: center; justify-content: center;
-      font-size: .65rem; font-weight: 900;
+    .check-list li::before {
+      content: "";
+      flex-shrink: 0; margin-top: 3px;
+      width: 15px; height: 15px; border-radius: 50%;
+      background: rgba(0,230,118,.08); border: 1px solid rgba(0,230,118,.18);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3 7l3 3 5-5' stroke='%2300E676' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     }
 
-    /* ─── Pricing ────────────────────────────────────────────────── */
-    .pricing-wrap {
-      display: flex; justify-content: center; margin-top: 56px;
+    /* ─── How it works ─────────────────────────────────────────── */
+    .how-wrap { border-top: 1px solid var(--border); }
+    .steps {
+      margin-top: 52px;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border: 1px solid var(--border); border-radius: 14px;
+      overflow: hidden;
     }
+    @media (max-width: 800px) { .steps { grid-template-columns: 1fr; } }
+    .step {
+      padding: 28px 22px;
+      background: var(--bg-1);
+      border-right: 1px solid var(--border);
+    }
+    .step:last-child { border-right: none; }
+    @media (max-width: 800px) {
+      .step { border-right: none; border-bottom: 1px solid var(--border); }
+      .step:last-child { border-bottom: none; }
+    }
+    .step-num {
+      font-size: 2.8rem; font-weight: 900; letter-spacing: -.06em; line-height: 1;
+      color: var(--accent); opacity: .28; margin-bottom: 16px;
+    }
+    .step h3 { font-size: .88rem; font-weight: 700; margin-bottom: 6px; }
+    .step p  { font-size: .78rem; color: var(--text-2); line-height: 1.6; }
+
+    /* ─── Testimonials ─────────────────────────────────────────── */
+    .t-wrap { border-top: 1px solid var(--border); }
+    .t-grid {
+      margin-top: 52px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+    }
+    @media (max-width: 800px) { .t-grid { grid-template-columns: 1fr; } }
+    .t-card {
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 24px;
+      transition: border-color .18s, transform .18s;
+    }
+    .t-card:hover { border-color: var(--border-2); transform: translateY(-3px); }
+    .t-stars { color: var(--accent); font-size: .82rem; margin-bottom: 12px; letter-spacing: 2px; }
+    .t-text { font-size: .86rem; color: var(--text-2); line-height: 1.72; margin-bottom: 20px; }
+    .t-author { display: flex; align-items: center; gap: 10px; }
+    .t-avatar {
+      width: 33px; height: 33px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .78rem; font-weight: 800; flex-shrink: 0; color: #fff;
+    }
+    .t-name { font-size: .8rem; font-weight: 700; }
+    .t-role { font-size: .7rem; color: var(--text-3); }
+
+    /* ─── Pricing ──────────────────────────────────────────────── */
+    .price-wrap-outer { border-top: 1px solid var(--border); }
+    .price-center { margin-top: 52px; display: flex; justify-content: center; }
     .price-card {
       position: relative;
-      background: var(--bg-2);
+      background: var(--bg-1);
       border: 1px solid var(--border-2);
       border-radius: 20px;
-      padding: 40px 44px;
-      max-width: 420px; width: 100%;
-      text-align: center;
+      padding: 44px 48px;
+      max-width: 440px; width: 100%;
       overflow: hidden;
     }
     .price-card::before {
       content: "";
-      position: absolute; top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, #6366f1, #a78bfa, #6366f1);
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), var(--accent), transparent);
+      animation: shimmer 4s linear infinite;
       background-size: 200%;
-      animation: shimmer 3s linear infinite;
     }
     .price-badge {
       display: inline-flex; align-items: center; gap: 6px;
-      padding: 4px 12px; border-radius: 100px;
-      background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.25);
-      color: var(--green); font-size: .72rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: .08em;
-      margin-bottom: 24px;
+      padding: 4px 10px; border-radius: 6px;
+      background: rgba(0,230,118,.07); border: 1px solid rgba(0,230,118,.18);
+      color: var(--green); font-size: .67rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .1em;
+      margin-bottom: 20px;
     }
-    .price-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
-
-    .price-name { font-size: 1.2rem; font-weight: 700; color: var(--text-2); margin-bottom: 8px; }
-    .price-amount {
-      display: flex; align-items: flex-start; justify-content: center; gap: 4px;
-      margin-bottom: 6px;
+    .price-badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
+    .price-name { font-size: 1.05rem; font-weight: 700; color: var(--text-2); margin-bottom: 12px; }
+    .price-amount { display: flex; align-items: flex-start; gap: 2px; margin-bottom: 4px; }
+    .price-curr { font-size: 1.3rem; font-weight: 700; color: var(--text-2); margin-top: 14px; }
+    .price-num {
+      font-size: 5.5rem; font-weight: 900; line-height: 1; letter-spacing: -.06em;
+      color: var(--text);
     }
-    .price-currency { font-size: 1.5rem; font-weight: 700; margin-top: 10px; color: var(--text-2); }
-    .price-number {
-      font-size: 5rem; font-weight: 900; line-height: 1;
-      letter-spacing: -.05em;
-      background: linear-gradient(135deg, #fafafa 0%, #a1a1aa 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    .price-period { font-size: .8rem; color: var(--text-3); margin-bottom: 28px; }
+    .price-items {
+      list-style: none;
+      border-top: 1px solid var(--border); padding-top: 22px; margin-bottom: 30px;
     }
-    .price-period { font-size: .85rem; color: var(--text-3); margin-bottom: 28px; }
-    .price-features {
-      text-align: left; list-style: none; margin-bottom: 32px;
-      border-top: 1px solid var(--border); padding-top: 24px;
-    }
-    .price-features li {
+    .price-items li {
       display: flex; align-items: center; gap: 10px;
-      font-size: .9rem; color: var(--text-2); padding: 7px 0;
+      font-size: .86rem; color: var(--text-2); padding: 5px 0;
     }
-    .price-features li .check {
-      flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
-      background: rgba(34,197,94,.15); color: var(--green);
+    .pi-check {
+      flex-shrink: 0; width: 17px; height: 17px; border-radius: 50%;
+      background: rgba(0,230,118,.08); border: 1px solid rgba(0,230,118,.18);
       display: flex; align-items: center; justify-content: center;
-      font-size: .65rem; font-weight: 900;
+      font-size: .52rem; color: var(--green); font-weight: 900;
     }
-
     .btn-buy {
-      display: block; width: 100%;
-      padding: 16px; border-radius: 10px; font-size: 1rem; font-weight: 700;
-      background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
-      color: #fff; text-decoration: none; text-align: center;
-      box-shadow: 0 4px 24px rgba(99,102,241,.4);
-      transition: opacity .2s, transform .15s;
+      display: block; width: 100%; padding: 14px;
+      border-radius: 10px; font-size: .95rem; font-weight: 700;
+      background: var(--accent); color: #fff;
+      text-decoration: none; text-align: center;
+      box-shadow: 0 4px 24px rgba(255,92,0,.32);
+      transition: background .18s, transform .14s, box-shadow .18s;
+      letter-spacing: -.01em;
     }
-    .btn-buy:hover { opacity: .9; transform: translateY(-2px); }
-    .price-note { margin-top: 16px; font-size: .77rem; color: var(--text-3); }
+    .btn-buy:hover {
+      background: var(--accent-2); transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(255,92,0,.38);
+    }
+    .price-note { text-align: center; margin-top: 12px; font-size: .7rem; color: var(--text-3); }
 
-    /* ─── FAQ ────────────────────────────────────────────────────── */
-    .faq-list { max-width: 680px; margin: 48px auto 0; }
-    .faq-item {
-      border-bottom: 1px solid var(--border);
-    }
+    /* ─── FAQ ──────────────────────────────────────────────────── */
+    .faq-wrap { border-top: 1px solid var(--border); }
+    .faq-list { max-width: 660px; margin: 48px auto 0; }
+    .faq-item { border-bottom: 1px solid var(--border); }
     .faq-q {
       width: 100%; background: none; border: none; color: var(--text);
-      text-align: left; padding: 20px 0; font-size: .95rem; font-weight: 600;
+      text-align: left; padding: 18px 0; font-size: .88rem; font-weight: 600;
       cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-      gap: 12px;
+      gap: 12px; font-family: var(--font);
     }
-    .faq-icon { font-size: 1.1rem; color: var(--text-3); transition: transform .2s; flex-shrink: 0; }
-    .faq-item.open .faq-icon { transform: rotate(45deg); color: var(--accent-2); }
+    .faq-icon { color: var(--text-3); transition: transform .2s, color .2s; flex-shrink: 0; font-size: 1rem; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); color: var(--accent); }
     .faq-a {
-      max-height: 0; overflow: hidden; transition: max-height .3s ease, padding .3s;
-      font-size: .9rem; color: var(--text-2); line-height: 1.7; padding-bottom: 0;
+      max-height: 0; overflow: hidden;
+      transition: max-height .32s ease, padding .32s;
+      font-size: .86rem; color: var(--text-2); line-height: 1.75;
     }
-    .faq-item.open .faq-a { max-height: 200px; padding-bottom: 18px; }
+    .faq-item.open .faq-a { max-height: 240px; padding-bottom: 18px; }
 
-    /* ─── Testimonials ───────────────────────────────────────────── */
-    .testimonials-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px; margin-top: 56px;
-    }
-    .t-card {
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-    }
-    .t-stars { color: #facc15; font-size: .85rem; margin-bottom: 12px; }
-    .t-text { font-size: .9rem; color: var(--text-2); line-height: 1.65; margin-bottom: 16px; }
-    .t-author { display: flex; align-items: center; gap: 10px; }
-    .t-avatar {
-      width: 36px; height: 36px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1rem; font-weight: 700; flex-shrink: 0;
-    }
-    .t-name { font-size: .85rem; font-weight: 600; }
-    .t-role { font-size: .75rem; color: var(--text-3); }
-
-    /* ─── CTA banner ─────────────────────────────────────────────── */
+    /* ─── CTA banner ──────────────────────────────────────────── */
+    .cta-outer { padding: 0 5vw 96px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
     .cta-banner {
-      position: relative; z-index: 1;
-      margin: 0 5vw 96px;
-      background: linear-gradient(135deg, rgba(99,102,241,.18) 0%, rgba(167,139,250,.1) 100%);
-      border: 1px solid rgba(99,102,241,.25);
+      position: relative;
+      background: var(--bg-1);
+      border: 1px solid var(--border-2);
       border-radius: 20px;
-      padding: 64px 5vw;
+      padding: 76px 5vw;
       text-align: center;
       overflow: hidden;
     }
     .cta-banner::before {
       content: "";
-      position: absolute; top: -60%; left: 50%; transform: translateX(-50%);
-      width: 600px; height: 300px;
-      background: radial-gradient(ellipse, rgba(99,102,241,.15) 0%, transparent 70%);
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 65% 55% at 50% 0%, rgba(255,92,0,.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-banner::after {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,92,0,.45), transparent);
     }
     .cta-banner h2 {
-      font-size: clamp(1.6rem, 3vw, 2.4rem);
-      font-weight: 800; letter-spacing: -.03em; margin-bottom: 14px;
+      font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+      font-weight: 800; letter-spacing: -.03em; margin-bottom: 12px;
     }
-    .cta-banner p { color: var(--text-2); max-width: 440px; margin: 0 auto 32px; }
-    .cta-banner .btn-primary { margin: 0 auto; display: inline-flex; }
+    .cta-banner p {
+      color: var(--text-2); max-width: 400px;
+      margin: 0 auto 32px; font-size: .95rem; line-height: 1.65;
+    }
 
-    /* ─── Footer ─────────────────────────────────────────────────── */
+    /* ─── Footer ───────────────────────────────────────────────── */
     footer {
       border-top: 1px solid var(--border);
-      padding: 40px 5vw;
-      display: flex; flex-wrap: wrap; align-items: center;
-      justify-content: space-between; gap: 20px;
-      color: var(--text-3); font-size: .82rem;
+      padding: 34px 5vw;
+      display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: space-between; gap: 16px;
+      font-size: .76rem; color: var(--text-3);
+      position: relative; z-index: 1;
     }
-    .footer-logo {
-      display: flex; align-items: center; gap: 8px;
-      font-weight: 700; font-size: .9rem; color: var(--text-2);
+    .footer-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--text-2); }
+    .footer-logo-icon {
+      width: 21px; height: 21px; border-radius: 5px;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center; font-size: .63rem;
     }
-    .footer-links { display: flex; gap: 22px; }
-    .footer-links a { color: var(--text-3); text-decoration: none; transition: color .2s; }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-links a { color: var(--text-3); text-decoration: none; transition: color .18s; }
     .footer-links a:hover { color: var(--text-2); }
 
-    /* ─── Animations ─────────────────────────────────────────────── */
+    /* ─── Animations ────────────────────────────────────────────── */
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(22px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: .4; }
+      0%, 100% { opacity: 1; box-shadow: 0 0 7px var(--accent); }
+      50%       { opacity: .35; box-shadow: 0 0 3px var(--accent); }
+    }
+    @keyframes clipSlideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes selPulse {
+      0%, 100% { box-shadow: 0 0 0 9999px rgba(0,0,0,.4), 0 0 18px rgba(255,92,0,.3); }
+      50%       { box-shadow: 0 0 0 9999px rgba(0,0,0,.56), 0 0 28px rgba(255,92,0,.5); }
     }
     @keyframes shimmer {
       0%   { background-position: 0% 50%; }
       100% { background-position: 200% 50%; }
     }
-    @keyframes selPulse {
-      0%, 100% { box-shadow: 0 0 0 9999px rgba(0,0,0,.42); }
-      50%       { box-shadow: 0 0 0 9999px rgba(0,0,0,.55); }
-    }
 
-    /* Scroll-reveal utility */
-    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .6s ease, transform .6s ease; }
+    /* Scroll reveal */
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .58s ease, transform .58s ease; }
     .reveal.visible { opacity: 1; transform: none; }
 
-    /* ─── Responsive ─────────────────────────────────────────────── */
+    /* Hero stagger */
+    .hero-left > * { animation: fadeUp .65s ease both; }
+    .hero-tag      { animation-delay: 0s; }
+    .hero-headline { animation-delay: .07s; }
+    .hero-sub      { animation-delay: .13s; }
+    .hero-cta      { animation-delay: .19s; }
+    .hero-trust    { animation-delay: .24s; }
+    .hero-visual   { animation: fadeUp .65s .28s ease both; }
+
     @media (max-width: 600px) {
-      nav .nav-links { display: none; }
-      .steps-wrap { grid-template-columns: 1fr; }
-      .step { border-right: none; border-bottom: 1px solid var(--border); }
-      .step:last-child { border-bottom: none; }
+      nav .nav-links a:not(.btn-nav) { display: none; }
     }
   </style>
 </head>
 <body>
 
-<!-- ─── Nav ──────────────────────────────────────────────────────── -->
+<!-- ─── Nav ──────────────────────────────────────────────────── -->
 <nav>
   <a class="nav-logo" href="#">
-    <span>📋</span> ClipMate
+    <div class="nav-logo-icon">📋</div>
+    ClipMate
   </a>
   <div class="nav-links">
     <a href="#features">Features</a>
     <a href="#how">How it works</a>
     <a href="#pricing">Pricing</a>
     <a href="#faq">FAQ</a>
-    <a href="#pricing" class="btn-nav">Get ClipMate — $5</a>
+    <a href="#pricing" class="btn-nav">Buy — $5</a>
   </div>
 </nav>
 
-<!-- ─── Hero ─────────────────────────────────────────────────────── -->
-<section class="hero">
-  <div class="hero-badge">
-    <span class="dot"></span>
-    Now available for macOS 13+
-  </div>
-
-  <h1>The clipboard<br />your Mac <em>deserves</em></h1>
-
-  <p class="hero-sub">
-    Never lose a copied snippet again. ClipMate tracks every text and image you copy,
-    lets you snip any screen region, and brings it all back with
-    <strong style="color:var(--text)">⌘ Shift V</strong>.
-  </p>
-
-  <div class="hero-cta">
-    <a href="#pricing" class="btn-primary">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-      Buy ClipMate — $5
-    </a>
-    <a href="#features" class="btn-ghost">
-      See features
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
-  </div>
-
-  <p class="hero-meta">One-time purchase · <strong>macOS only</strong> · No subscription ever</p>
-
-  <!-- App window mockup -->
-  <div class="mockup-wrap">
-    <div class="mockup-glow"></div>
-    <div class="mockup">
-      <div class="mockup-bar">
-        <span class="mock-dot r"></span>
-        <span class="mock-dot y"></span>
-        <span class="mock-dot g"></span>
-        <span class="mockup-title">Clipboard History — ClipMate</span>
+<!-- ─── Hero ──────────────────────────────────────────────────── -->
+<div class="hero-wrap">
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-tag">
+        <span class="dot"></span>
+        For macOS 13 Ventura+
       </div>
-      <div class="mock-search">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        Search clipboard…
+
+      <h1 class="hero-headline">
+        ⌘V only remembers<br/>
+        <span class="hl-dim">one thing.</span><br/>
+        <span class="hl-accent">ClipMate</span> remembers fifty.
+      </h1>
+
+      <p class="hero-sub">
+        A native macOS clipboard manager that lives in your menu bar.
+        <strong>Text, code, images</strong> — all within reach with one shortcut.
+        Zero cloud, zero subscription.
+      </p>
+
+      <div class="hero-cta">
+        <a href="#pricing" class="btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download — $5 one-time
+        </a>
+        <a href="#features" class="btn-ghost">
+          See features
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
       </div>
-      <div class="mock-items">
-        <div class="mock-item active">
-          <div class="mock-icon">📝</div>
-          <div class="mock-text">
-            <div class="mt">const handleSubmit = async (data) => {…}</div>
-            <div class="ms">Just now</div>
-          </div>
-          <span class="mock-tag">text</span>
-        </div>
-        <div class="mock-item">
-          <div class="mock-img-icon" style="background:linear-gradient(135deg,#6366f1,#a78bfa)"></div>
-          <div class="mock-text">
-            <div class="mt">[Screenshot]</div>
-            <div class="ms">2m ago</div>
-          </div>
-          <span class="mock-tag">img</span>
-        </div>
-        <div class="mock-item">
-          <div class="mock-icon">📝</div>
-          <div class="mock-text">
-            <div class="mt">https://api.example.com/v2/users</div>
-            <div class="ms">5m ago</div>
-          </div>
-        </div>
-        <div class="mock-item">
-          <div class="mock-icon">📝</div>
-          <div class="mock-text">
-            <div class="mt">sk-prod-xxxxxxxxxxxxxxxxxxxxxxxx</div>
-            <div class="ms">12m ago</div>
-          </div>
-        </div>
-        <div class="mock-item">
-          <div class="mock-icon">📝</div>
-          <div class="mock-text">
-            <div class="mt">Meeting at 3pm — don't forget the slides</div>
-            <div class="ms">1h ago</div>
-          </div>
-        </div>
-      </div>
-      <div class="mock-snip-bar">
-        <span class="mock-snip-label">50 items stored</span>
-        <span class="mock-snip-btn">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/></svg>
-          Snip
-        </span>
+
+      <div class="hero-trust">
+        <span class="trust-item"><span class="trust-check">✓</span> One-time payment</span>
+        <span class="trust-sep">·</span>
+        <span class="trust-item"><span class="trust-check">✓</span> macOS only</span>
+        <span class="trust-sep">·</span>
+        <span class="trust-item"><span class="trust-check">✓</span> 100% local</span>
+        <span class="trust-sep">·</span>
+        <span class="trust-item"><span class="trust-check">✓</span> Lifetime updates</span>
       </div>
     </div>
-  </div>
 
-  <div class="kbd-badge">
-    <kbd>⌘</kbd>
-    <kbd>⇧</kbd>
-    <kbd>V</kbd>
-    <span class="kbd-label">— open from anywhere, any app</span>
-  </div>
-</section>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-glow"></div>
+      <div style="width:100%;max-width:355px">
+        <div class="app-window">
+          <div class="win-bar">
+            <span class="win-dot r"></span>
+            <span class="win-dot y"></span>
+            <span class="win-dot g"></span>
+            <span class="win-title">Clipboard History — ClipMate</span>
+          </div>
+          <div class="win-search">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            Search clipboard…
+          </div>
+          <div class="clip-list" id="clipList"></div>
+          <div class="win-footer">
+            <span class="win-count" id="clipCount">5 items</span>
+            <button class="win-snip" type="button">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/></svg>
+              Snip
+            </button>
+          </div>
+        </div>
+        <div class="shortcut-badge">
+          <kbd>⌘</kbd>
+          <kbd>⇧</kbd>
+          <kbd>V</kbd>
+          <span class="shortcut-label">open from any app</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
 
-<!-- ─── Social proof ──────────────────────────────────────────────── -->
-<div class="proof reveal">
-  <div class="proof-label">Trusted by developers &amp; designers</div>
-  <div class="proof-stats">
-    <div>
-      <div class="stat-num"><span>50</span></div>
-      <div class="stat-label">items in history</div>
-    </div>
-    <div>
-      <div class="stat-num"><span>0.5s</span></div>
-      <div class="stat-label">polling interval</div>
-    </div>
-    <div>
-      <div class="stat-num"><span>&lt;5 MB</span></div>
-      <div class="stat-label">memory footprint</div>
-    </div>
-    <div>
-      <div class="stat-num"><span>0</span></div>
-      <div class="stat-label">cloud dependencies</div>
-    </div>
+<!-- ─── Stats bar ─────────────────────────────────────────────── -->
+<div class="stats-bar reveal">
+  <div class="stat">
+    <div class="stat-num">50</div>
+    <div class="stat-label">items tracked</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">&lt;5 MB</div>
+    <div class="stat-label">memory footprint</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">0</div>
+    <div class="stat-label">cloud dependencies</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">$5</div>
+    <div class="stat-label">one-time · forever</div>
   </div>
 </div>
 
-<!-- ─── Features ─────────────────────────────────────────────────── -->
-<section class="section" id="features">
-  <div class="section-label">Features</div>
-  <h2 class="section-title">Everything you copy,<br />always within reach</h2>
-  <p class="section-sub">
-    ClipMate stays out of your way until you need it. No bloat, no subscriptions,
-    no data leaving your machine.
+<!-- ─── Interrupt ─────────────────────────────────────────────── -->
+<div class="interrupt reveal">
+  <p class="interrupt-hl">
+    "How many <span class="hi">code snippets, API keys,</span><br/>
+    and <span class="hi">URLs</span> have you re-copied because<br/>
+    ⌘V only holds one thing?"
   </p>
+  <p class="interrupt-sub">
+    ClipMate silently catches everything. You'll never retype something you already copied.
+  </p>
+</div>
 
-  <div class="features-grid reveal">
-    <div class="feature-card">
-      <div class="feature-icon ic-purple">⌨️</div>
+<!-- ─── Features ─────────────────────────────────────────────── -->
+<section class="section features-wrap" id="features">
+  <div class="section-eyebrow">Features</div>
+  <h2 class="section-heading">Built for people who copy things.</h2>
+  <p class="section-sub">No bloat, no subscription, no data leaving your Mac. Just a better clipboard.</p>
+
+  <div class="feat-grid reveal">
+    <div class="feat">
+      <div class="feat-icon">⌨️</div>
       <h3>Global Shortcut</h3>
-      <p>Press <strong>⌘ Shift V</strong> from any app to instantly summon your clipboard history. No switching windows, no hunting through menus.</p>
+      <p>⌘ Shift V from any app, any window. Your clipboard history appears instantly — no menu bar clicking required.</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon ic-blue">📋</div>
+    <div class="feat">
+      <div class="feat-icon">📋</div>
       <h3>50-Item History</h3>
-      <p>Automatically captures the last 50 copied items — text and images. Scrollable, searchable, always up to date.</p>
+      <p>Tracks the last 50 copied items automatically. Text, code snippets, URLs, images — all there when you need them.</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon ic-green">✂️</div>
+    <div class="feat">
+      <div class="feat-icon">✂️</div>
       <h3>Built-in Snip Tool</h3>
-      <p>Click <strong>Snip</strong> in the panel to draw a selection on any display. The screenshot lands straight in your history and clipboard.</p>
+      <p>Capture any screen region with the Snip button. The screenshot lands straight into your clipboard history, ready to paste.</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon ic-pink">🔍</div>
+    <div class="feat">
+      <div class="feat-icon">🔍</div>
       <h3>Instant Search</h3>
-      <p>Type to filter your clipboard history in real time. Find that API key or snippet you copied an hour ago in milliseconds.</p>
+      <p>Type to filter your entire history in real time. Find that API key you copied an hour ago in under a second.</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon ic-orange">🖥️</div>
-      <h3>Multi-Display Snipping</h3>
-      <p>The snip overlay appears on <em>every</em> connected display so you can capture content from any screen.</p>
+    <div class="feat">
+      <div class="feat-icon">🖥️</div>
+      <h3>Multi-Display</h3>
+      <p>The snip overlay spans every connected display. Capture content from any screen, any arrangement.</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon ic-yellow">🔒</div>
-      <h3>100% Local</h3>
-      <p>Everything stays on your Mac. No accounts, no cloud sync, no analytics. Your clipboard is private by design.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ─── How it works ──────────────────────────────────────────────── -->
-<section class="section" id="how" style="padding-top:0">
-  <div class="section-label">How it works</div>
-  <h2 class="section-title">Up and running in seconds</h2>
-
-  <div class="steps-wrap reveal">
-    <div class="step">
-      <div class="step-num">01</div>
-      <h3>Download &amp; run</h3>
-      <p>Double-click the <code>.app</code> — ClipMate lives in your menu bar and never appears in the Dock.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">02</div>
-      <h3>Grant permissions</h3>
-      <p>Allow <strong>Accessibility</strong> for the hotkey and <strong>Screen Recording</strong> for the snip tool. One-time prompts, nothing else.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">03</div>
-      <h3>Copy freely</h3>
-      <p>Use your Mac normally. ClipMate silently tracks every copy in the background, zero friction.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">04</div>
-      <h3>⌘ Shift V to recall</h3>
-      <p>Hit the shortcut anywhere. Find, click, and instantly paste any previous item — text or image.</p>
+    <div class="feat">
+      <div class="feat-icon">🔒</div>
+      <h3>100% Private</h3>
+      <p>All clipboard data lives in memory, on your machine only. No accounts, no cloud sync, no analytics. Ever.</p>
     </div>
   </div>
 
-  <!-- Snip demo -->
-  <div class="snip-demo reveal">
-    <div class="snip-screen">
-      <!-- Fake desktop content behind overlay -->
-      <div style="position:absolute;inset:0;background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#1e1b4b 100%);opacity:.6"></div>
-      <div style="position:absolute;top:14%;left:8%;font-size:.7rem;color:rgba(255,255,255,.3);font-family:monospace;line-height:1.8">
+  <!-- Snip spotlight -->
+  <div class="spotlight reveal">
+    <div class="spot-visual" aria-hidden="true">
+      <div class="spot-bg"></div>
+      <div class="spot-code">
         function processData(input) {<br/>
-        &nbsp;&nbsp;const result = transform(input);<br/>
-        &nbsp;&nbsp;return validate(result);<br/>
+        &nbsp;&nbsp;const res = transform(input);<br/>
+        &nbsp;&nbsp;return validate(res);<br/>
         }<br/><br/>
         export default processData;
       </div>
-      <!-- Dim overlay with cutout -->
-      <div class="snip-overlay"></div>
-      <div class="snip-selection">
-        <div class="corner-bl"></div>
-        <div class="corner-br"></div>
+      <div class="spot-overlay"></div>
+      <div class="spot-sel">
+        <span class="spot-corner tl"></span>
+        <span class="spot-corner tr"></span>
+        <span class="spot-corner bl"></span>
+        <span class="spot-corner br"></span>
       </div>
-      <div class="snip-dim-label">374 × 194</div>
-      <div class="snip-hint">Click and drag to capture a region  •  Esc to cancel</div>
+      <div class="spot-dims">374 × 194</div>
+      <div class="spot-hint">Drag to select any region · Esc to cancel</div>
     </div>
 
-    <div class="snip-text">
-      <h3>Snip any region,<br/>instantly.</h3>
-      <p>
-        Click the <strong>Snip</strong> button inside the history panel.
-        A full-screen overlay with a live dimension readout appears
-        on every connected display.
-      </p>
-      <ul class="snip-bullets">
-        <li>Drag to select any region on any display</li>
-        <li>Captured screenshot goes to your clipboard history</li>
-        <li>Automatically copied — ready to paste immediately</li>
+    <div class="spot-text">
+      <h3>Snip anything.<br/>Paste immediately.</h3>
+      <p>Hit <strong style="color:var(--text)">Snip</strong> inside the clipboard panel. A full-screen overlay appears on every connected display — drag to select any region.</p>
+      <ul class="check-list">
+        <li>Live pixel dimension readout as you drag</li>
+        <li>Screenshot lands instantly in your clipboard history</li>
+        <li>Automatically copied — ready to paste in any app</li>
         <li>History panel re-opens after capture</li>
-        <li>Press Esc at any time to cancel</li>
+        <li>Works across all connected displays</li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- ─── Testimonials ──────────────────────────────────────────────── -->
-<section class="section" style="padding-top:0">
-  <div class="section-label">Reviews</div>
-  <h2 class="section-title">Loved by people who copy things</h2>
+<!-- ─── How it works ──────────────────────────────────────────── -->
+<section class="section how-wrap" id="how" style="padding-top:0">
+  <div class="section-eyebrow">How it works</div>
+  <h2 class="section-heading">Running in under a minute.</h2>
 
-  <div class="testimonials-grid reveal">
+  <div class="steps reveal">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Download &amp; run</h3>
+      <p>Double-click the <code style="font-family:var(--mono);font-size:.73rem;color:var(--text-2)">.app</code>. ClipMate lives in the menu bar — no Dock icon, no splash screen.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Grant permissions</h3>
+      <p>Allow <strong>Accessibility</strong> for the hotkey and <strong>Screen Recording</strong> for Snip. One-time prompts, nothing recurring.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Copy as usual</h3>
+      <p>Use your Mac normally. ClipMate tracks every copy in the background. Zero friction, zero slowdown.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h3>⌘ ⇧ V to recall</h3>
+      <p>Hit the shortcut from any app, click any item, and it's pasted instantly. Text or image.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Testimonials ──────────────────────────────────────────── -->
+<section class="section t-wrap" style="padding-top:0">
+  <div class="section-eyebrow">Testimonials</div>
+  <h2 class="section-heading">Loved by people who copy things.</h2>
+
+  <div class="t-grid reveal">
     <div class="t-card">
       <div class="t-stars">★★★★★</div>
-      <p class="t-text">"I didn't realise how often I needed a clipboard manager until I started using one. ClipMate is the fastest, leanest option I've tried. The snip tool is a bonus I use daily."</p>
+      <p class="t-text">"I didn't realise how much I needed a clipboard manager until I started using one. ClipMate is the fastest, leanest option I've tried — the snip tool is a daily bonus."</p>
       <div class="t-author">
-        <div class="t-avatar" style="background:rgba(99,102,241,.2)">JK</div>
+        <div class="t-avatar" style="background:#3730a3">JK</div>
         <div>
           <div class="t-name">James K.</div>
           <div class="t-role">Full-stack Developer</div>
@@ -882,9 +945,9 @@
     </div>
     <div class="t-card">
       <div class="t-stars">★★★★★</div>
-      <p class="t-text">"As a designer, I copy reference images, hex codes, and snippets constantly. ClipMate's history panel is always one shortcut away. Worth every penny — and then some at $5."</p>
+      <p class="t-text">"As a designer I copy hex codes, reference images, and specs constantly. ClipMate's always one shortcut away. Worth every penny — and then some at $5."</p>
       <div class="t-author">
-        <div class="t-avatar" style="background:rgba(236,72,153,.2)">SR</div>
+        <div class="t-avatar" style="background:#9d174d">SR</div>
         <div>
           <div class="t-name">Sofia R.</div>
           <div class="t-role">Product Designer</div>
@@ -893,9 +956,9 @@
     </div>
     <div class="t-card">
       <div class="t-stars">★★★★★</div>
-      <p class="t-text">"Exactly what ⌘+V should have been on macOS from the start. It's native Swift, tiny, private, and just works. The fact that it's a one-time $5 is almost comical."</p>
+      <p class="t-text">"Exactly what ⌘V should have been on macOS from day one. Native Swift, tiny footprint, completely private. The $5 price is almost insulting how good it is."</p>
       <div class="t-author">
-        <div class="t-avatar" style="background:rgba(34,197,94,.2)">AP</div>
+        <div class="t-avatar" style="background:#065f46">AP</div>
         <div>
           <div class="t-name">Alex P.</div>
           <div class="t-role">DevOps Engineer</div>
@@ -905,44 +968,45 @@
   </div>
 </section>
 
-<!-- ─── Pricing ───────────────────────────────────────────────────── -->
-<section class="section" id="pricing" style="padding-top:0">
-  <div class="section-label">Pricing</div>
-  <h2 class="section-title">Simple, honest pricing</h2>
-  <p class="section-sub">One purchase. Yours forever. No subscriptions, no upsells.</p>
+<!-- ─── Pricing ───────────────────────────────────────────────── -->
+<section class="section price-wrap-outer" id="pricing" style="padding-top:0">
+  <div class="section-eyebrow">Pricing</div>
+  <h2 class="section-heading">Simple, honest pricing.</h2>
+  <p class="section-sub">One payment. Yours forever. No subscriptions, no upsells, no nonsense.</p>
 
-  <div class="pricing-wrap reveal">
+  <div class="price-center reveal">
     <div class="price-card">
-      <div class="price-badge"><span class="dot"></span> Best value</div>
+      <div class="price-badge">
+        <span class="price-badge-dot"></span>
+        Best value
+      </div>
       <div class="price-name">ClipMate for macOS</div>
       <div class="price-amount">
-        <span class="price-currency">$</span>
-        <span class="price-number">5</span>
+        <span class="price-curr">$</span>
+        <span class="price-num">5</span>
       </div>
-      <div class="price-period">one-time · lifetime updates included</div>
-
-      <ul class="price-features">
-        <li><span class="check">✓</span> Clipboard history (50 items)</li>
-        <li><span class="check">✓</span> Global ⌘ Shift V shortcut</li>
-        <li><span class="check">✓</span> Built-in snip / screen capture tool</li>
-        <li><span class="check">✓</span> Multi-display snipping</li>
-        <li><span class="check">✓</span> Instant text search</li>
-        <li><span class="check">✓</span> Text &amp; image support</li>
-        <li><span class="check">✓</span> Runs entirely on-device — no cloud</li>
-        <li><span class="check">✓</span> Native Swift — macOS 13 Ventura+</li>
-        <li><span class="check">✓</span> All future updates</li>
+      <p class="price-period">one-time payment · lifetime updates included</p>
+      <ul class="price-items">
+        <li><span class="pi-check">✓</span> Clipboard history (50 items)</li>
+        <li><span class="pi-check">✓</span> Global ⌘ Shift V shortcut</li>
+        <li><span class="pi-check">✓</span> Built-in screen capture / snip tool</li>
+        <li><span class="pi-check">✓</span> Multi-display snipping</li>
+        <li><span class="pi-check">✓</span> Instant text search</li>
+        <li><span class="pi-check">✓</span> Text &amp; image support</li>
+        <li><span class="pi-check">✓</span> 100% on-device — no cloud</li>
+        <li><span class="pi-check">✓</span> Native Swift · macOS 13 Ventura+</li>
+        <li><span class="pi-check">✓</span> All future updates</li>
       </ul>
-
-      <a href="#" class="btn-buy">Buy ClipMate for $5 →</a>
-      <p class="price-note">Secure checkout · Instant download after purchase</p>
+      <a href="#" class="btn-buy">Buy ClipMate — $5 →</a>
+      <p class="price-note">Secure checkout · Instant download · macOS only</p>
     </div>
   </div>
 </section>
 
-<!-- ─── FAQ ───────────────────────────────────────────────────────── -->
-<section class="section" id="faq" style="padding-top:0">
-  <div class="section-label">FAQ</div>
-  <h2 class="section-title">Common questions</h2>
+<!-- ─── FAQ ───────────────────────────────────────────────────── -->
+<section class="section faq-wrap" id="faq" style="padding-top:0">
+  <div class="section-eyebrow">FAQ</div>
+  <h2 class="section-heading">Common questions.</h2>
 
   <div class="faq-list reveal">
     <div class="faq-item">
@@ -950,95 +1014,164 @@
         What macOS version do I need?
         <span class="faq-icon">+</span>
       </button>
-      <div class="faq-a">ClipMate requires macOS 13 Ventura or later. It is a native Swift app and takes full advantage of modern macOS APIs.</div>
+      <div class="faq-a">ClipMate requires macOS 13 Ventura or later. It is a native Swift app that uses modern macOS APIs not available in older versions.</div>
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
-        Why does it ask for Accessibility &amp; Screen Recording permissions?
+        Why does it need Accessibility &amp; Screen Recording permissions?
         <span class="faq-icon">+</span>
       </button>
-      <div class="faq-a">Accessibility permission is needed to intercept the global ⌘ Shift V shortcut from any app. Screen Recording is needed to capture the region you select with the Snip tool. Both are standard macOS privacy protections. ClipMate never uploads anything — all data stays on your Mac.</div>
+      <div class="faq-a">Accessibility permission is required to intercept the global ⌘ Shift V shortcut from any app — this is a macOS requirement for all global hotkeys. Screen Recording is required for the Snip tool to capture screen regions. ClipMate never sends any data anywhere; both permissions are used entirely on-device.</div>
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
-        Is my clipboard data stored anywhere?
+        Is my clipboard data stored or transmitted anywhere?
         <span class="faq-icon">+</span>
       </button>
-      <div class="faq-a">No. ClipMate keeps your clipboard history in memory only. It is cleared when you quit the app or click "Clear All". Nothing is written to disk, synced to a server, or sent anywhere.</div>
+      <div class="faq-a">No. ClipMate holds your clipboard history in memory only. It is cleared when you quit or click "Clear All". Nothing is written to disk, synced to a server, or sent anywhere, ever.</div>
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
-        Will it slow down my Mac?
+        Will it slow my Mac down?
         <span class="faq-icon">+</span>
       </button>
-      <div class="faq-a">No. ClipMate uses under 5 MB of memory and polls the clipboard every 0.5 seconds, which is negligible. It is a native Swift app with no background processes beyond the single timer.</div>
+      <div class="faq-a">No. ClipMate uses under 5 MB of RAM and polls the clipboard every 0.5 seconds — negligible CPU overhead. It is a native Swift app with no background processes beyond a single timer.</div>
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
         Can I use it on multiple Macs?
         <span class="faq-icon">+</span>
       </button>
-      <div class="faq-a">Yes. Your $5 purchase covers personal use on all your own Macs. Just download and run the app on each machine.</div>
+      <div class="faq-a">Yes. One $5 purchase covers personal use on all your own Macs. Download and run the app on each machine — no license keys or activation required.</div>
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
-        Is it available on the Mac App Store?
+        Why isn't it on the Mac App Store?
         <span class="faq-icon">+</span>
       </button>
-      <div class="faq-a">Not currently. The global keyboard shortcut (CGEventTap) and screen capture APIs require running outside Apple's App Sandbox, which is not permitted in the Mac App Store. ClipMate is distributed as a direct download.</div>
+      <div class="faq-a">The global keyboard shortcut (CGEventTap) and screen capture APIs ClipMate relies on require running outside Apple's App Sandbox. App Sandbox restrictions in the Mac App Store prevent these capabilities, so ClipMate is distributed as a direct download only.</div>
     </div>
   </div>
 </section>
 
-<!-- ─── CTA ───────────────────────────────────────────────────────── -->
-<div class="cta-banner reveal">
-  <h2>Stop losing what you copy.</h2>
-  <p>Join developers and designers who've made ClipMate part of their daily workflow.</p>
-  <a href="#pricing" class="btn-primary">
-    Get ClipMate for $5
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-  </a>
+<!-- ─── CTA ───────────────────────────────────────────────────── -->
+<div class="cta-outer reveal">
+  <div class="cta-banner">
+    <h2>Stop losing what you copy.</h2>
+    <p>Join developers and designers who've made ClipMate part of their daily workflow.</p>
+    <a href="#pricing" class="btn-primary" style="display:inline-flex;margin:0 auto">
+      Get ClipMate — $5
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
 </div>
 
-<!-- ─── Footer ────────────────────────────────────────────────────── -->
+<!-- ─── Footer ────────────────────────────────────────────────── -->
 <footer>
-  <div class="footer-logo">📋 ClipMate</div>
+  <div class="footer-logo">
+    <div class="footer-logo-icon">📋</div>
+    ClipMate
+  </div>
   <div class="footer-links">
     <a href="#">Privacy</a>
     <a href="#">Terms</a>
-    <a href="https://github.com" target="_blank">GitHub</a>
+    <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
     <a href="mailto:hello@clipmate.app">Contact</a>
   </div>
-  <span>© 2026 ClipMate. Made for macOS.</span>
+  <span>© 2026 ClipMate. Built for macOS.</span>
 </footer>
 
 <script>
-  /* ─── FAQ accordion ─────────────────────────────────────── */
-  function toggleFaq(btn) {
-    const item = btn.closest('.faq-item');
-    const isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
-    if (!isOpen) item.classList.add('open');
+/* ─── Animated clipboard feed ────────────────────────────── */
+const CLIPS = [
+  { type: 'code', badge: 'code', content: 'const handleSubmit = async (e) => {',  app: 'Cursor' },
+  { type: 'url',  badge: 'url',  content: 'https://api.github.com/users/acme',     app: 'Chrome' },
+  { type: 'img',  badge: 'img',  content: '[Screenshot — Figma frame]',            app: 'Figma'  },
+  { type: 'text', badge: 'text', content: "Meeting at 3pm — don't forget slides",  app: 'Notes'  },
+  { type: 'code', badge: 'code', content: 'sk-prod-xK8mN2pL4qR9vW3eA7bC1dF6',     app: 'Cursor' },
+  { type: 'text', badge: 'text', content: 'john.doe@acme.io',                       app: 'Mail'   },
+  { type: 'url',  badge: 'url',  content: 'https://linear.app/team/ENG-4821',       app: 'Safari' },
+  { type: 'code', badge: 'code', content: 'border-radius: 12px; overflow: hidden;', app: 'VS Code'},
+  { type: 'img',  badge: 'img',  content: '[Screenshot — Dashboard chart]',         app: 'Chrome' },
+  { type: 'text', badge: 'text', content: '+1 (555) 867-5309',                      app: 'Contacts'},
+];
+const ICONS  = { code: '⌨', url: '🔗', img: '🖼', text: '📝' };
+const TIMES  = ['just now', '1m ago', '3m ago', '6m ago', '12m ago'];
+
+let clipCursor = 0;
+
+function makeItem(clip, idx) {
+  const div = document.createElement('div');
+  div.className = 'clip-item' + (idx === 0 ? ' is-top' : '');
+  div.innerHTML =
+    `<div class="clip-thumb ${clip.type}">${ICONS[clip.type]}</div>` +
+    `<div class="clip-body">` +
+      `<div class="clip-main">${clip.content}</div>` +
+      `<div class="clip-meta">${TIMES[Math.min(idx, TIMES.length - 1)]} · ${clip.app}</div>` +
+    `</div>` +
+    `<span class="clip-badge badge-${clip.badge}">${clip.badge}</span>`;
+  return div;
+}
+
+function initFeed() {
+  const list = document.getElementById('clipList');
+  list.innerHTML = '';
+  CLIPS.slice(0, 5).forEach((c, i) => list.appendChild(makeItem(c, i)));
+}
+
+function tickFeed() {
+  const list = document.getElementById('clipList');
+  clipCursor = (clipCursor + 1) % CLIPS.length;
+
+  // Remove last item with fade
+  const last = list.lastElementChild;
+  if (last) {
+    last.style.transition = 'opacity .22s, transform .22s';
+    last.style.opacity = '0';
+    last.style.transform = 'translateX(8px)';
+    setTimeout(() => last.remove(), 220);
   }
 
-  /* ─── Scroll-reveal ─────────────────────────────────────── */
-  const observer = new IntersectionObserver(
-    entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
-    { threshold: 0.12 }
-  );
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  // Insert new item at top
+  const el = makeItem(CLIPS[clipCursor], 0);
+  list.insertBefore(el, list.firstChild);
 
-  /* ─── Navbar active link highlight ─────────────────────── */
-  const sections = document.querySelectorAll('section[id]');
-  window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) current = s.id; });
-    document.querySelectorAll('.nav-links a[href^="#"]').forEach(a => {
-      a.style.color = a.getAttribute('href') === '#' + current
-        ? 'var(--text)'
-        : 'var(--text-2)';
+  // Remove is-top from former first item after brief pause
+  setTimeout(() => {
+    const items = list.querySelectorAll('.clip-item');
+    items.forEach((item, i) => {
+      item.classList.toggle('is-top', i === 0);
     });
-  }, { passive: true });
+  }, 50);
+}
+
+initFeed();
+setInterval(tickFeed, 2600);
+
+/* ─── FAQ accordion ──────────────────────────────────────── */
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+/* ─── Scroll reveal ──────────────────────────────────────── */
+const observer = new IntersectionObserver(
+  entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+  { threshold: 0.1 }
+);
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ─── Active nav highlight ───────────────────────────────── */
+const navSections = document.querySelectorAll('section[id]');
+window.addEventListener('scroll', () => {
+  let current = '';
+  navSections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+  document.querySelectorAll('.nav-links a[href^="#"]').forEach(a => {
+    a.style.color = a.getAttribute('href') === '#' + current ? 'var(--text)' : '';
+  });
+}, { passive: true });
 </script>
 </body>
 </html>
