@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Bundle identity -->
+    <key>CFBundleIdentifier</key>
+    <string>com.clipboardmanager.app</string>
+    <key>CFBundleName</key>
+    <string>ClipboardManager</string>
+    <key>CFBundleDisplayName</key>
+    <string>Clipboard Manager</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+    <key>CFBundleExecutable</key>
+    <string>ClipboardManager</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+
+    <!-- Minimum OS -->
+    <key>LSMinimumSystemVersion</key>
+    <string>13.0</string>
+
+    <!-- Hide the Dock icon — app lives in the menu bar only -->
+    <key>LSUIElement</key>
+    <true/>
+
+    <!-- Privacy usage descriptions (shown in System Settings) -->
+    <key>NSScreenRecordingUsageDescription</key>
+    <string>Clipboard Manager needs Screen Recording access to capture selected screen regions with the Snip tool.</string>
+
+    <key>NSAppleEventsUsageDescription</key>
+    <string>Clipboard Manager uses Accessibility access to register the global Cmd+Shift+V keyboard shortcut.</string>
+</dict>
+</plist>
