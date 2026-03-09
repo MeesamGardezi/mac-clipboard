@@ -6,6 +6,7 @@ import Combine
 /// Polls NSPasteboard every 0.5 s and records new items into `history`.
 final class ClipboardMonitor: ObservableObject {
     @Published var history: [ClipboardItem] = []
+    @Published var savedItems: [ClipboardItem] = []
 
     private var lastChangeCount: Int = NSPasteboard.general.changeCount
     private var timer: Timer?
@@ -71,6 +72,21 @@ final class ClipboardMonitor: ObservableObject {
             if self.history.count > 50 {
                 self.history = Array(self.history.prefix(50))
             }
+        }
+    }
+
+    func save(_ item: ClipboardItem) {
+        DispatchQueue.main.async {
+            guard !self.savedItems.contains(where: { $0.id == item.id }) else { return }
+            item.isSaved = true
+            self.savedItems.insert(item, at: 0)
+        }
+    }
+
+    func unsave(_ item: ClipboardItem) {
+        DispatchQueue.main.async {
+            item.isSaved = false
+            self.savedItems.removeAll { $0.id == item.id }
         }
     }
 

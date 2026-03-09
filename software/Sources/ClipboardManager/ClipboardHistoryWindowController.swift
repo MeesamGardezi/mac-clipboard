@@ -46,21 +46,23 @@ final class ClipboardHistoryWindowController {
                 onDismiss: { [weak self] in self?.hide() }
             )
         )
-        hostingView.frame = NSRect(x: 0, y: 0, width: 400, height: 520)
+        hostingView.frame = NSRect(x: 0, y: 0, width: 400, height: 540)
 
         let p = NSPanel(
-            contentRect: NSRect(x: 0, y: 0, width: 400, height: 520),
-            styleMask: [.titled, .closable, .fullSizeContentView,
-                        .nonactivatingPanel, .hudWindow],
+            contentRect: NSRect(x: 0, y: 0, width: 400, height: 540),
+            styleMask: [.titled, .closable, .fullSizeContentView, .nonactivatingPanel],
             backing: .buffered,
             defer: false
         )
         p.title = ""
         p.titleVisibility = .hidden
         p.titlebarAppearsTransparent = true
+        p.appearance = NSAppearance(named: .aqua)   // force light mode
+        p.backgroundColor = NSColor(red: 245/255, green: 244/255, blue: 240/255, alpha: 1)
         p.level = .floating
         p.isReleasedWhenClosed = false
         p.hidesOnDeactivate = false
+        p.hasShadow = true
         p.contentView = hostingView
         panel = p
     }

@@ -29,6 +29,7 @@ final class ClipboardItem: Identifiable, ObservableObject {
     let id = UUID()
     let content: ClipboardContent
     let timestamp: Date
+    @Published var isSaved: Bool = false
 
     init(content: ClipboardContent) {
         self.content = content

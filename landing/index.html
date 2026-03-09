@@ -208,6 +208,26 @@
     .win-dot.g { background: #28C840; }
     .win-title { flex: 1; text-align: center; font-size: .7rem; color: var(--text-3); font-weight: 500; }
 
+    .win-tabs {
+      display: flex; align-items: center; gap: 4px;
+      padding: 6px 10px; background: var(--bg-1);
+      border-bottom: 1px solid var(--border);
+    }
+    .win-tab {
+      display: flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 6px; font-size: .68rem; font-weight: 600;
+      color: var(--text-2); border: 1px solid transparent;
+    }
+    .win-tab.active {
+      background: rgba(255,92,0,.08); color: var(--accent);
+      border-color: rgba(255,92,0,.18);
+    }
+    .win-tab-badge {
+      font-size: .58rem; font-weight: 700;
+      padding: 1px 5px; border-radius: 4px;
+      background: rgba(255,92,0,.1); color: var(--accent);
+    }
+
     .win-search {
       display: flex; align-items: center; gap: 8px;
       margin: 10px;
@@ -767,7 +787,11 @@
           <span class="win-dot r"></span>
           <span class="win-dot y"></span>
           <span class="win-dot g"></span>
-          <span class="win-title">Clipboard History — maClip</span>
+          <span class="win-title">maClip</span>
+        </div>
+        <div class="win-tabs">
+          <div class="win-tab active">History <span class="win-tab-badge">5</span></div>
+          <div class="win-tab">Saved</div>
         </div>
         <div class="win-search">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>

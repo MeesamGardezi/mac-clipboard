@@ -1,6 +1,24 @@
 import SwiftUI
 import AppKit
 
+// MARK: - Brand colors (matches landing page)
+
+private extension Color {
+    static let mcBg       = Color(red: 245/255, green: 244/255, blue: 240/255)
+    static let mcSurface  = Color.white
+    static let mcSurface2 = Color(red: 237/255, green: 236/255, blue: 232/255)
+    static let mcAccent   = Color(red: 1.0,     green: 92/255,  blue: 0)
+    static let mcText     = Color(red: 17/255,  green: 17/255,  blue: 17/255)
+    static let mcText2    = Color(red: 90/255,  green: 90/255,  blue: 90/255)
+    static let mcText3    = Color(red: 154/255, green: 154/255, blue: 154/255)
+    static let mcBorder   = Color.black.opacity(0.07)
+    static let mcBorder2  = Color.black.opacity(0.12)
+}
+
+// MARK: - Tab
+
+enum AppTab { case history, saved }
+
 // MARK: - ClipboardHistoryView
 
 struct ClipboardHistoryView: View {
@@ -10,8 +28,9 @@ struct ClipboardHistoryView: View {
 
     @State private var searchText = ""
     @State private var hoveredID: UUID?
+    @State private var activeTab: AppTab = .history
 
-    private var filteredItems: [ClipboardItem] {
+    private var filteredHistory: [ClipboardItem] {
         guard !searchText.isEmpty else { return monitor.history }
         return monitor.history.filter {
             if case .text(let s) = $0.content {
@@ -24,150 +43,279 @@ struct ClipboardHistoryView: View {
     var body: some View {
         VStack(spacing: 0) {
             header
-            Divider()
-            searchBar
-            Divider()
+            rule
+            tabBar
+            rule
+            if activeTab == .history {
+                searchBar
+                rule
+            }
             itemList
-            Divider()
+            rule
             footer
         }
-        .frame(width: 400, height: 520)
-        .background(.ultraThinMaterial)
+        .frame(width: 400, height: 540)
+        .background(Color.mcBg)
     }
 
-    // MARK: Sub-views
+    // MARK: Header
 
     private var header: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "doc.on.clipboard.fill")
-                .foregroundStyle(.secondary)
-            Text("Clipboard History")
-                .font(.headline)
+        HStack(spacing: 9) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(Color.mcAccent)
+                    .frame(width: 24, height: 24)
+                Image(systemName: "clipboard.fill")
+                    .font(.system(size: 11.5, weight: .medium))
+                    .foregroundStyle(.white)
+            }
+            Text("maClip")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(Color.mcText)
             Spacer()
             Button(action: onSnip) {
-                Label("Snip", systemImage: "scissors")
-                    .font(.caption.weight(.medium))
+                HStack(spacing: 4) {
+                    Image(systemName: "scissors")
+                        .font(.system(size: 10.5))
+                    Text("Snip")
+                        .font(.system(size: 11, weight: .medium))
+                }
+                .foregroundStyle(Color.mcText2)
+                .padding(.horizontal, 9)
+                .padding(.vertical, 5)
+                .background(Color.mcSurface)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(Color.mcBorder2, lineWidth: 1)
+                )
             }
-            .buttonStyle(.bordered)
-            .controlSize(.small)
-            .help("Capture a screen region (Snipping Tool)")
-
+            .buttonStyle(.plain)
+            .help("Capture a screen region")
             Button(action: onDismiss) {
-                Image(systemName: "xmark.circle.fill")
-                    .foregroundStyle(.secondary)
+                Image(systemName: "xmark")
+                    .font(.system(size: 9.5, weight: .bold))
+                    .foregroundStyle(Color.mcText3)
+                    .frame(width: 20, height: 20)
+                    .background(Color.mcSurface2)
+                    .clipShape(Circle())
             }
             .buttonStyle(.plain)
         }
         .padding(.horizontal, 14)
-        .padding(.vertical, 10)
+        .padding(.vertical, 11)
+        .background(Color.mcSurface)
     }
+
+    // MARK: Tab bar
+
+    private var tabBar: some View {
+        HStack(spacing: 4) {
+            tabButton("History", tab: .history, badge: monitor.history.count)
+            tabButton("Saved",   tab: .saved,   badge: monitor.savedItems.count)
+            Spacer()
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(Color.mcSurface)
+    }
+
+    private func tabButton(_ label: String, tab: AppTab, badge: Int) -> some View {
+        let active = activeTab == tab
+        return Button {
+            withAnimation(.easeInOut(duration: 0.14)) { activeTab = tab }
+            if tab != .history { searchText = "" }
+        } label: {
+            HStack(spacing: 5) {
+                Text(label)
+                    .font(.system(size: 12, weight: .medium))
+                if badge > 0 {
+                    Text("\(badge)")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(active ? Color.mcAccent : Color.mcText3)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 1)
+                        .background(active ? Color.mcAccent.opacity(0.1) : Color.mcSurface2)
+                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                }
+            }
+            .foregroundStyle(active ? Color.mcAccent : Color.mcText2)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(active ? Color.mcAccent.opacity(0.08) : Color.clear)
+            .clipShape(RoundedRectangle(cornerRadius: 7))
+            .overlay(
+                RoundedRectangle(cornerRadius: 7)
+                    .stroke(active ? Color.mcAccent.opacity(0.2) : Color.clear, lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: Search bar
 
     private var searchBar: some View {
         HStack(spacing: 6) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(.tertiary)
+                .font(.system(size: 11.5))
+                .foregroundStyle(Color.mcText3)
             TextField("Search clipboard…", text: $searchText)
                 .textFieldStyle(.plain)
-                .font(.system(size: 13))
+                .font(.system(size: 12.5))
+                .foregroundStyle(Color.mcText)
             if !searchText.isEmpty {
                 Button { searchText = "" } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.mcText3)
                 }
                 .buttonStyle(.plain)
             }
         }
         .padding(.horizontal, 14)
-        .padding(.vertical, 7)
-        .background(Color(NSColor.textBackgroundColor).opacity(0.4))
+        .padding(.vertical, 8)
+        .background(Color.mcBg)
     }
+
+    // MARK: Item list
 
     @ViewBuilder
     private var itemList: some View {
-        if filteredItems.isEmpty {
+        let items: [ClipboardItem] = activeTab == .history ? filteredHistory : monitor.savedItems
+        if items.isEmpty {
             emptyState
         } else {
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    ForEach(filteredItems) { item in
+                    ForEach(items) { item in
                         ClipboardItemRow(
                             item: item,
                             isHovered: hoveredID == item.id,
-                            onHover: { hoveredID = $0 ? item.id : nil },
-                            onSelect: {
-                                monitor.copyToClipboard(item)
-                                onDismiss()
-                            }
+                            onHover:      { hoveredID = $0 ? item.id : nil },
+                            onSelect:     { monitor.copyToClipboard(item); onDismiss() },
+                            onToggleSave: { item.isSaved ? monitor.unsave(item) : monitor.save(item) }
                         )
-                        Divider().padding(.leading, 58)
+                        rule.padding(.leading, 58)
                     }
                 }
                 .padding(.vertical, 4)
             }
+            .background(Color.mcBg)
         }
     }
+
+    // MARK: Empty state
 
     private var emptyState: some View {
         VStack(spacing: 10) {
-            Image(systemName: monitor.history.isEmpty ? "clipboard" : "magnifyingglass")
-                .font(.system(size: 36))
-                .foregroundStyle(.tertiary)
-            Text(monitor.history.isEmpty ? "Nothing copied yet" : "No matching items")
-                .foregroundStyle(.secondary)
-                .font(.callout)
+            Image(systemName: activeTab == .history
+                  ? (monitor.history.isEmpty ? "clipboard" : "magnifyingglass")
+                  : "bookmark")
+                .font(.system(size: 30))
+                .foregroundStyle(Color.mcText3)
+            Text(activeTab == .history
+                 ? (monitor.history.isEmpty ? "Nothing copied yet" : "No matching items")
+                 : "No saved items yet")
+                .font(.system(size: 13))
+                .foregroundStyle(Color.mcText2)
+            if activeTab == .saved {
+                Text("Hover any item in History and tap the bookmark to save it forever.")
+                    .font(.system(size: 11))
+                    .foregroundStyle(Color.mcText3)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 220)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.mcBg)
     }
+
+    // MARK: Footer
 
     private var footer: some View {
         HStack {
-            Text("\(monitor.history.count) item\(monitor.history.count == 1 ? "" : "s")")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+            let count = activeTab == .history ? monitor.history.count : monitor.savedItems.count
+            Text(activeTab == .history
+                 ? "\(count) item\(count == 1 ? "" : "s")"
+                 : "\(count) saved")
+                .font(.system(size: 11))
+                .foregroundStyle(Color.mcText3)
             Spacer()
-            if !monitor.history.isEmpty {
-                Button("Clear All") { monitor.clearHistory() }
-                    .font(.caption)
-                    .foregroundStyle(.red)
+            if activeTab == .history && !monitor.history.isEmpty {
+                Button("Clear History") { monitor.clearHistory() }
+                    .font(.system(size: 11))
+                    .foregroundStyle(Color.red.opacity(0.65))
                     .buttonStyle(.plain)
             }
         }
         .padding(.horizontal, 14)
-        .padding(.vertical, 7)
+        .padding(.vertical, 8)
+        .background(Color.mcSurface)
+    }
+
+    private var rule: some View {
+        Rectangle()
+            .fill(Color.mcBorder)
+            .frame(height: 1)
     }
 }
 
 // MARK: - ClipboardItemRow
 
 struct ClipboardItemRow: View {
-    let item: ClipboardItem
+    @ObservedObject var item: ClipboardItem
     let isHovered: Bool
     let onHover: (Bool) -> Void
     let onSelect: () -> Void
+    let onToggleSave: () -> Void
 
     var body: some View {
-        Button(action: onSelect) {
-            HStack(alignment: .top, spacing: 10) {
-                itemIcon
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(item.content.previewText)
-                        .lineLimit(item.isImage ? 1 : 2)
-                        .font(.system(size: 12.5))
-                        .foregroundStyle(.primary)
-                    Text(item.timeAgoString)
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
+        HStack(spacing: 0) {
+            Button(action: onSelect) {
+                HStack(alignment: .top, spacing: 10) {
+                    itemIcon
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(item.content.previewText)
+                            .lineLimit(item.isImage ? 1 : 2)
+                            .font(.system(size: 12.5))
+                            .foregroundStyle(Color(red: 17/255, green: 17/255, blue: 17/255))
+                        Text(item.timeAgoString)
+                            .font(.system(size: 10.5))
+                            .foregroundStyle(Color(red: 154/255, green: 154/255, blue: 154/255))
+                    }
+                    Spacer(minLength: isHovered ? 28 : 0)
                 }
-                Spacer(minLength: 0)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 9)
+                .contentShape(Rectangle())
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .contentShape(Rectangle())
+            .buttonStyle(.plain)
+
+            // Single bookmark icon — appears only on hover
+            if isHovered {
+                Button(action: onToggleSave) {
+                    Image(systemName: item.isSaved ? "bookmark.fill" : "bookmark")
+                        .font(.system(size: 12.5, weight: .medium))
+                        .foregroundStyle(
+                            item.isSaved
+                                ? Color(red: 1.0, green: 92/255, blue: 0)
+                                : Color(red: 154/255, green: 154/255, blue: 154/255)
+                        )
+                        .frame(width: 32, height: 32)
+                }
+                .buttonStyle(.plain)
+                .padding(.trailing, 8)
+                .help(item.isSaved ? "Remove from Saved" : "Save forever")
+                .transition(.opacity.animation(.easeInOut(duration: 0.1)))
+            }
         }
-        .buttonStyle(.plain)
-        .background(isHovered
-            ? Color(NSColor.selectedContentBackgroundColor).opacity(0.15)
-            : Color.clear)
+        .background(
+            isHovered
+                ? (item.isSaved
+                    ? Color(red: 1.0, green: 92/255, blue: 0).opacity(0.05)
+                    : Color.black.opacity(0.04))
+                : Color.clear
+        )
         .onHover(perform: onHover)
     }
 
@@ -181,12 +329,12 @@ struct ClipboardItemRow: View {
                 .clipShape(RoundedRectangle(cornerRadius: 4))
         } else {
             ZStack {
-                RoundedRectangle(cornerRadius: 4)
-                    .fill(Color(NSColor.controlBackgroundColor))
+                RoundedRectangle(cornerRadius: 5)
+                    .fill(Color(red: 237/255, green: 236/255, blue: 232/255))
                     .frame(width: 44, height: 36)
                 Image(systemName: "doc.text")
-                    .font(.system(size: 16))
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 15))
+                    .foregroundStyle(Color(red: 90/255, green: 90/255, blue: 90/255))
             }
         }
     }
