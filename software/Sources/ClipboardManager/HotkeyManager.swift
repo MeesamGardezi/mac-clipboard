@@ -18,7 +18,9 @@ final class HotkeyManager {
     func register(action: @escaping () -> Void) {
         HotkeyManager.onHotkey = action
         requestAccessibilityPermission()
-        createEventTap()
+        if !createEventTap() {
+            showAccessibilityAlert()
+        }
     }
 
     // MARK: Private
@@ -29,7 +31,8 @@ final class HotkeyManager {
         AXIsProcessTrustedWithOptions(options)
     }
 
-    private func createEventTap() {
+    @discardableResult
+    private func createEventTap() -> Bool {
         let mask = CGEventMask(1 << CGEventType.keyDown.rawValue)
 
         // NOTE: This is a C callback — no Swift closures, no captured self.
@@ -62,12 +65,38 @@ final class HotkeyManager {
         ) else {
             print("[HotkeyManager] Could not create event tap. " +
                   "Grant Accessibility access in System Settings → Privacy → Accessibility.")
-            return
+            return false
         }
 
         let src = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0)
         CFRunLoopAddSource(CFRunLoopGetMain(), src, .commonModes)
         CGEvent.tapEnable(tap: tap, enable: true)
         eventTap = tap
+        return true
+    }
+
+    private func showAccessibilityAlert() {
+        DispatchQueue.main.async {
+            let alert = NSAlert()
+            alert.messageText = "Accessibility Permission Required"
+            alert.informativeText = """
+                ClipboardManager needs Accessibility access to intercept the \
+                Cmd+Shift+V hotkey globally.
+
+                Please go to:
+                System Settings → Privacy & Security → Accessibility
+
+                Enable ClipboardManager, then relaunch the app.
+                """
+            alert.alertStyle = .warning
+            alert.addButton(withTitle: "Open Privacy Settings")
+            alert.addButton(withTitle: "Later")
+
+            NSApp.activate(ignoringOtherApps: true)
+            if alert.runModal() == .alertFirstButtonReturn {
+                let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
+                NSWorkspace.shared.open(url)
+            }
+        }
     }
 }
