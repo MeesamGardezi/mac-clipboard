@@ -15,21 +15,33 @@ final class ClipboardHistoryWindowController {
         self.monitor = monitor
     }
 
-    // MARK: Show / Hide
+    // MARK: Show / Hide / Toggle
 
     func toggle() {
         if let panel, panel.isVisible {
-            panel.orderOut(nil)
+            hide()
         } else {
-            showPanel()
+            show()
         }
     }
 
     func show() {
         if panel == nil { buildPanel() }
         positionPanel()
+
+        // Activate the app so the panel can become key.
+        // On macOS, an .accessory app cannot have key windows unless it
+        // explicitly activates itself first.
         NSApp.activate(ignoringOtherApps: true)
+
         panel?.makeKeyAndOrderFront(nil)
+
+        // Belt-and-suspenders: sometimes makeKeyAndOrderFront alone isn't
+        // enough if the app was deeply in the background. Ordering front
+        // explicitly after a microtask ensures visibility.
+        DispatchQueue.main.async { [weak self] in
+            self?.panel?.orderFrontRegardless()
+        }
     }
 
     func hide() {
@@ -59,10 +71,29 @@ final class ClipboardHistoryWindowController {
         p.titlebarAppearsTransparent = true
         p.appearance = NSAppearance(named: .aqua)   // force light mode
         p.backgroundColor = NSColor(red: 245/255, green: 244/255, blue: 240/255, alpha: 1)
+
+        // Floating level ensures the panel sits above normal windows
         p.level = .floating
+
         p.isReleasedWhenClosed = false
+
+        // Do NOT hide on deactivate — the user may click another window
+        // and then immediately hit Cmd+Shift+V to bring it back; if the
+        // panel hides on deactivate the toggle logic gets confused about
+        // whether the panel is "visible".
         p.hidesOnDeactivate = false
+
         p.hasShadow = true
+
+        // Allow the panel to appear on all Spaces and over full-screen apps.
+        // Without this, switching to a full-screen Space hides the panel and
+        // Cmd+Shift+V appears to do nothing.
+        p.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .transient]
+
+        // Ensure the panel can receive key events (for search field, Esc, etc.)
+        p.isMovableByWindowBackground = true
+        p.becomesKeyOnlyIfNeeded = false
+
         p.contentView = hostingView
         panel = p
     }
@@ -76,13 +107,6 @@ final class ClipboardHistoryWindowController {
         let x = sv.maxX - pw.width - 16
         let y = sv.maxY - pw.height - 8
         panel.setFrameOrigin(NSPoint(x: x, y: y))
-    }
-
-    private func showPanel() {
-        if panel == nil { buildPanel() }
-        positionPanel()
-        NSApp.activate(ignoringOtherApps: true)
-        panel?.makeKeyAndOrderFront(nil)
     }
 
     // MARK: Private – Snip

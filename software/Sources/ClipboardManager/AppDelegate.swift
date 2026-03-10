@@ -17,12 +17,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupStatusBar()
         monitor.start()
 
-        // Lazy-init window controller (avoids creating the window before the
+        // Build the window controller (avoids creating the window before the
         // run loop is ready)
         windowController = ClipboardHistoryWindowController(monitor: monitor)
 
+        // Register the global hotkey — note: HotkeyManager internally delays
+        // tap creation by 0.3 s to let the run loop settle.
         hotkey.register { [weak self] in
             self?.windowController?.toggle()
+        }
+
+        // Show the clipboard history panel on launch.
+        // Delay slightly so the status bar, monitor, and event tap are all
+        // initialised before the panel appears. This also ensures the panel
+        // positions correctly relative to the menu bar.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            self?.windowController?.show()
         }
     }
 

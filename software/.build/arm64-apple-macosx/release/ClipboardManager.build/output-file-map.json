@@ -1,0 +1,55 @@
+{
+  "": {
+    "dependencies": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardManager.d",
+    "object": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardManager.o",
+    "swift-dependencies": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/master.swiftdeps"
+  },
+  "/Users/meesam/projects/mac-clipboard/software/Sources/ClipboardManager/AppDelegate.swift": {
+    "object": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/AppDelegate.swift.o",
+    "swiftmodule": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/AppDelegate~partial.swiftmodule",
+    "swift-dependencies": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/AppDelegate.swiftdeps",
+    "diagnostics": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/AppDelegate.dia"
+  },
+  "/Users/meesam/projects/mac-clipboard/software/Sources/ClipboardManager/ClipboardHistoryView.swift": {
+    "object": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardHistoryView.swift.o",
+    "swiftmodule": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardHistoryView~partial.swiftmodule",
+    "swift-dependencies": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardHistoryView.swiftdeps",
+    "diagnostics": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardHistoryView.dia"
+  },
+  "/Users/meesam/projects/mac-clipboard/software/Sources/ClipboardManager/ClipboardHistoryWindowController.swift": {
+    "object": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardHistoryWindowController.swift.o",
+    "swiftmodule": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardHistoryWindowController~partial.swiftmodule",
+    "swift-dependencies": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardHistoryWindowController.swiftdeps",
+    "diagnostics": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardHistoryWindowController.dia"
+  },
+  "/Users/meesam/projects/mac-clipboard/software/Sources/ClipboardManager/ClipboardItem.swift": {
+    "object": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardItem.swift.o",
+    "swiftmodule": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardItem~partial.swiftmodule",
+    "swift-dependencies": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardItem.swiftdeps",
+    "diagnostics": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardItem.dia"
+  },
+  "/Users/meesam/projects/mac-clipboard/software/Sources/ClipboardManager/ClipboardMonitor.swift": {
+    "object": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardMonitor.swift.o",
+    "swiftmodule": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardMonitor~partial.swiftmodule",
+    "swift-dependencies": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardMonitor.swiftdeps",
+    "diagnostics": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/ClipboardMonitor.dia"
+  },
+  "/Users/meesam/projects/mac-clipboard/software/Sources/ClipboardManager/HotkeyManager.swift": {
+    "object": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/HotkeyManager.swift.o",
+    "swiftmodule": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/HotkeyManager~partial.swiftmodule",
+    "swift-dependencies": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/HotkeyManager.swiftdeps",
+    "diagnostics": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/HotkeyManager.dia"
+  },
+  "/Users/meesam/projects/mac-clipboard/software/Sources/ClipboardManager/SnipTool.swift": {
+    "object": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/SnipTool.swift.o",
+    "swiftmodule": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/SnipTool~partial.swiftmodule",
+    "swift-dependencies": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/SnipTool.swiftdeps",
+    "diagnostics": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/SnipTool.dia"
+  },
+  "/Users/meesam/projects/mac-clipboard/software/Sources/ClipboardManager/main.swift": {
+    "object": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/main.swift.o",
+    "swiftmodule": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/main~partial.swiftmodule",
+    "swift-dependencies": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/main.swiftdeps",
+    "diagnostics": "/Users/meesam/projects/mac-clipboard/software/.build/arm64-apple-macosx/release/ClipboardManager.build/main.dia"
+  }
+}
