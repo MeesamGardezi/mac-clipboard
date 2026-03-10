@@ -20,731 +20,1266 @@
   <meta name="twitter:description" content="⌘V only remembers one thing. maClip remembers 50. $5 one-time for macOS." />
 
   <link rel="canonical" href="https://maclip.app/" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FF5C00'/><text y='.85em' font-size='68' x='15'>📋</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23FF5C00'/><text y='.9em' font-size='64' x='18'>📋</text></svg>" />
 
   <!-- Structured data: Product -->
-  <script type="application/ld+json">{"@context":"https://schema.org/","@type":"SoftwareApplication","name":"maClip","operatingSystem":"macOS 13 Ventura or later","applicationCategory":"UtilitiesApplication","offers":{"@type":"Offer","price":"5.00","priceCurrency":"USD"},"description":"Lightweight clipboard manager for macOS. Track 50 items, global hotkey recall, built-in screen capture. 100% local.","aggregateRating":{"@type":"AggregateRating","ratingValue":"5","reviewCount":"3","bestRating":"5"}}</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "maClip",
+    "operatingSystem": "macOS 13+",
+    "applicationCategory": "UtilitiesApplication",
+    "offers": { "@type": "Offer", "price": "5", "priceCurrency": "USD" },
+    "description": "Native macOS clipboard manager with 50-item history, global shortcut, and built-in screen capture tool.",
+    "url": "https://maclip.app/"
+  }
+  </script>
 
   <!-- Structured data: FAQ -->
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What macOS version does maClip require?","acceptedAnswer":{"@type":"Answer","text":"maClip requires macOS 13 Ventura or later. It is a native Swift app."}},{"@type":"Question","name":"Does maClip send my clipboard data anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. maClip stores everything in memory on your device only. Nothing is uploaded or shared."}},{"@type":"Question","name":"Will maClip slow down my Mac?","acceptedAnswer":{"@type":"Answer","text":"No. maClip uses under 5 MB of RAM and has negligible CPU overhead."}},{"@type":"Question","name":"Can I use maClip on multiple Macs?","acceptedAnswer":{"@type":"Answer","text":"Yes. One $5 purchase covers personal use on all your own Macs."}}]}</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "What macOS version do I need?", "acceptedAnswer": { "@type": "Answer", "text": "maClip requires macOS 13 Ventura or later." } },
+      { "@type": "Question", "name": "Is my clipboard data stored or transmitted anywhere?", "acceptedAnswer": { "@type": "Answer", "text": "No. maClip holds your clipboard history in memory only. Nothing is written to disk or sent anywhere." } },
+      { "@type": "Question", "name": "Why does it need Accessibility & Screen Recording permissions?", "acceptedAnswer": { "@type": "Answer", "text": "Accessibility is required for the global ⌘⇧V shortcut. Screen Recording is required for the Snip tool. Both are used entirely on-device." } },
+      { "@type": "Question", "name": "Will it slow my Mac down?", "acceptedAnswer": { "@type": "Answer", "text": "No. maClip uses under 5 MB of RAM and polls the clipboard every 0.5 seconds." } },
+      { "@type": "Question", "name": "Can I use it on multiple Macs?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. One $5 purchase covers personal use on all your own Macs." } },
+      { "@type": "Question", "name": "Why isn't it on the Mac App Store?", "acceptedAnswer": { "@type": "Answer", "text": "The global keyboard shortcut and screen capture APIs require running outside Apple's App Sandbox." } }
+    ]
+  }
+  </script>
 
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<style>
+/* ─── Reset & base ───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg:           #F5F4F0;
-      --bg-1:         #FFFFFF;
-      --bg-2:         #EDECE8;
-      --bg-3:         #E4E3DE;
-      --border:       rgba(0,0,0,.07);
-      --border-2:     rgba(0,0,0,.12);
-      --text:         #111111;
-      --text-2:       #5A5A5A;
-      --text-3:       #9A9A9A;
-      --accent:       #FF5C00;
-      --accent-2:     #FF7A29;
-      --accent-glow:  rgba(255,92,0,.18);
-      --green:        #059669;
-      --green-bg:     rgba(5,150,105,.08);
-      --green-border: rgba(5,150,105,.2);
-      --font:         -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-      --mono:         "SF Mono", "JetBrains Mono", "Fira Code", "Courier New", monospace;
-    }
+:root {
+  --bg:          #080808;
+  --bg2:         #0f0f0f;
+  --surface:     #141414;
+  --surface2:    #1c1c1c;
+  --surface3:    #252525;
+  --border:      rgba(255,255,255,0.06);
+  --border2:     rgba(255,255,255,0.11);
+  --accent:      #FF5C00;
+  --accent-dim:  rgba(255,92,0,0.12);
+  --accent-glow: rgba(255,92,0,0.3);
+  --text:        #f0ede8;
+  --text2:       #999590;
+  --text3:       #565250;
+  --mono:        'SF Mono', ui-monospace, 'Cascadia Code', monospace;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
 
-    html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; }
 
-    body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
 
-    /* ─── Nav ─────────────────────────────────────────────── */
-    nav {
-      position: sticky; top: 0; z-index: 200;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 5vw; height: 58px;
-      background: rgba(245,244,240,.92);
-      backdrop-filter: blur(20px) saturate(160%);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-logo {
-      display: flex; align-items: center; gap: 9px;
-      font-size: .95rem; font-weight: 700; letter-spacing: -.02em;
-      text-decoration: none; color: var(--text);
-    }
-    .nav-logo-icon {
-      width: 27px; height: 27px; border-radius: 7px;
-      background: var(--accent);
-      display: flex; align-items: center; justify-content: center;
-      font-size: .82rem; flex-shrink: 0;
-    }
-    .nav-links { display: flex; align-items: center; gap: 4px; }
-    .nav-links a {
-      padding: 6px 11px; border-radius: 6px;
-      color: var(--text-2); text-decoration: none; font-size: .82rem;
-      transition: color .18s, background .18s;
-    }
-    .nav-links a:hover { color: var(--text); background: rgba(0,0,0,.05); }
-    .btn-nav {
-      padding: 7px 15px; border-radius: 7px; font-size: .82rem; font-weight: 700;
-      background: var(--accent); color: #fff; text-decoration: none;
-      transition: background .18s, transform .14s;
-      letter-spacing: -.01em;
-    }
-    .btn-nav:hover { background: var(--accent-2); transform: translateY(-1px); }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; border: none; background: none; font: inherit; color: inherit; }
 
-    /* ─── Hero ─────────────────────────────────────────────── */
-    .hero {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 56px;
-      align-items: center;
-      padding: 88px 5vw 88px;
-      max-width: 1200px;
-      margin: 0 auto;
-      min-height: calc(100vh - 58px);
-      position: relative; z-index: 1;
-    }
-    @media (max-width: 900px) {
-      .hero { grid-template-columns: 1fr; min-height: auto; padding: 56px 5vw 60px; }
-      .hero-visual { display: none; }
-    }
+/* ─── Nav ───────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 56px;
+  background: rgba(8,8,8,0.75);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+}
 
-    .hero-tag {
-      display: inline-flex; align-items: center; gap: 7px;
-      padding: 4px 11px; border-radius: 6px;
-      background: rgba(255,92,0,.08); border: 1px solid rgba(255,92,0,.18);
-      color: var(--accent); font-size: .7rem; font-weight: 800;
-      letter-spacing: .09em; text-transform: uppercase;
-      margin-bottom: 30px;
-    }
-    .hero-tag .dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--accent); box-shadow: 0 0 6px var(--accent);
-      animation: pulse 2s infinite;
-    }
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -.3px;
+}
 
-    .hero-headline {
-      font-size: clamp(2.6rem, 5.2vw, 4.6rem);
-      font-weight: 800; line-height: 1.05; letter-spacing: -.045em;
-      margin-bottom: 24px;
-    }
-    .hl-dim    { color: var(--text-3); }
-    .hl-accent { color: var(--accent); }
+.nav-logo-icon {
+  width: 28px; height: 28px;
+  background: var(--accent);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  line-height: 1;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
 
-    .hero-sub {
-      font-size: 1.05rem; color: var(--text-2); line-height: 1.72;
-      max-width: 430px; margin-bottom: 24px;
-    }
-    .hero-sub strong { color: var(--text); }
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 
-    .hero-stats {
-      display: flex; align-items: center; gap: 0;
-      margin-bottom: 32px;
-      background: var(--bg-1);
-      border: 1px solid var(--border-2);
-      border-radius: 10px;
-      overflow: hidden;
-      width: fit-content;
-    }
-    .hero-stat {
-      padding: 10px 22px;
-      border-right: 1px solid var(--border);
-      text-align: center;
-    }
-    .hero-stat:last-child { border-right: none; }
-    .hero-stat-num {
-      font-size: 1.35rem; font-weight: 800; letter-spacing: -.04em;
-      color: var(--accent); line-height: 1;
-    }
-    .hero-stat-label {
-      font-size: .65rem; font-weight: 600; color: var(--text-3);
-      text-transform: uppercase; letter-spacing: .07em; margin-top: 3px;
-    }
+.nav-links a {
+  font-size: 13.5px;
+  color: var(--text2);
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: color .15s, background .15s;
+}
 
-    .hero-cta { display: flex; gap: 11px; flex-wrap: wrap; margin-bottom: 22px; }
+.nav-links a:hover,
+.nav-links a.active { color: var(--text); background: var(--surface2); }
 
-    .btn-primary {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 13px 24px; border-radius: 9px; font-size: .93rem; font-weight: 700;
-      background: var(--accent); color: #fff; text-decoration: none;
-      box-shadow: 0 4px 14px rgba(255,92,0,.3);
-      transition: background .18s, transform .14s, box-shadow .18s;
-      letter-spacing: -.01em;
-    }
-    .btn-primary:hover {
-      background: var(--accent-2); transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(255,92,0,.35);
-    }
-    .btn-ghost {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 13px 24px; border-radius: 9px; font-size: .93rem; font-weight: 600;
-      border: 1px solid var(--border-2); color: var(--text-2);
-      text-decoration: none; background: var(--bg-1);
-      transition: border-color .18s, color .18s, transform .14s, box-shadow .18s;
-      box-shadow: 0 1px 4px rgba(0,0,0,.06);
-    }
-    .btn-ghost:hover {
-      border-color: rgba(0,0,0,.2); color: var(--text);
-      transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.1);
-    }
+.btn-nav {
+  background: var(--accent) !important;
+  color: #fff !important;
+  font-weight: 600;
+  font-size: 13px !important;
+  padding: 7px 16px !important;
+  border-radius: 9px !important;
+  box-shadow: 0 0 16px var(--accent-glow);
+  transition: opacity .15s, box-shadow .15s !important;
+}
+.btn-nav:hover { opacity: .88; box-shadow: 0 0 24px var(--accent-glow) !important; }
 
-    .hero-trust {
-      display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px;
-      font-size: .76rem; color: var(--text-3);
-    }
-    .trust-item { display: flex; align-items: center; gap: 5px; }
-    .trust-check { color: var(--green); }
-    .trust-sep { opacity: .4; }
+/* ─── Hero ──────────────────────────────────────────────────── */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 60px;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 140px 40px 100px;
+  min-height: 100svh;
+}
 
-    /* ─── Mockup ─────────────────────────────────────────────── */
-    .hero-visual {
-      position: relative;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .hero-glow {
-      position: absolute; inset: -80px;
-      background: radial-gradient(ellipse 55% 55% at 50% 50%, rgba(255,92,0,.06) 0%, transparent 70%);
-      pointer-events: none;
-    }
+/* Background glow orbs */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; left: 50%;
+  transform: translateX(-50%);
+  width: 900px; height: 600px;
+  background: radial-gradient(ellipse at 30% 40%, rgba(255,92,0,.15) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 60%, rgba(255,150,50,.06) 0%, transparent 55%);
+  pointer-events: none;
+  filter: blur(1px);
+}
 
-    .app-window {
-      width: 100%; max-width: 355px;
-      background: var(--bg-1);
-      border: 1px solid rgba(0,0,0,.1);
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 4px 6px rgba(0,0,0,.04), 0 20px 60px rgba(0,0,0,.12), 0 0 0 1px rgba(0,0,0,.03);
-    }
-    .win-bar {
-      display: flex; align-items: center; gap: 7px;
-      padding: 11px 14px;
-      background: #F0EFEB;
-      border-bottom: 1px solid rgba(0,0,0,.08);
-    }
-    .win-dot { width: 11px; height: 11px; border-radius: 50%; }
-    .win-dot.r { background: #FF5F57; }
-    .win-dot.y { background: #FEBC2E; }
-    .win-dot.g { background: #28C840; }
-    .win-title { flex: 1; text-align: center; font-size: .7rem; color: var(--text-3); font-weight: 500; }
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text2);
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 100px;
+  padding: 5px 13px 5px 9px;
+  margin-bottom: 28px;
+  letter-spacing: .3px;
+}
 
-    .win-tabs {
-      display: flex; align-items: center; gap: 4px;
-      padding: 6px 10px; background: var(--bg-1);
-      border-bottom: 1px solid var(--border);
-    }
-    .win-tab {
-      display: flex; align-items: center; gap: 5px;
-      padding: 4px 10px; border-radius: 6px; font-size: .68rem; font-weight: 600;
-      color: var(--text-2); border: 1px solid transparent;
-    }
-    .win-tab.active {
-      background: rgba(255,92,0,.08); color: var(--accent);
-      border-color: rgba(255,92,0,.18);
-    }
-    .win-tab-badge {
-      font-size: .58rem; font-weight: 700;
-      padding: 1px 5px; border-radius: 4px;
-      background: rgba(255,92,0,.1); color: var(--accent);
-    }
+.tag-dot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--accent-glow);
+  animation: pulse 2s ease-in-out infinite;
+}
 
-    .win-search {
-      display: flex; align-items: center; gap: 8px;
-      margin: 10px;
-      padding: 8px 10px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      font-size: .76rem; color: var(--text-3);
-    }
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--accent-glow); }
+  50%       { opacity: .6; box-shadow: 0 0 12px var(--accent-glow); }
+}
 
-    .clip-list {
-      padding: 4px 8px;
-      display: flex; flex-direction: column; gap: 2px;
-      min-height: 220px;
-      overflow: hidden;
-    }
-    .clip-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 8px 7px; border-radius: 7px;
-      cursor: pointer;
-      transition: background .14s;
-      animation: clipSlideIn .32s cubic-bezier(.22,1,.36,1) both;
-    }
-    .clip-item.is-top {
-      background: rgba(255,92,0,.07);
-      border: 1px solid rgba(255,92,0,.12);
-    }
-    .clip-item:not(.is-top):hover { background: rgba(0,0,0,.04); }
+.hero-headline {
+  font-size: clamp(40px, 5vw, 62px);
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1.07;
+  margin-bottom: 22px;
+}
 
-    .clip-thumb {
-      width: 30px; height: 26px; border-radius: 5px;
-      background: var(--bg-2); flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: .78rem;
-    }
-    .clip-thumb.code { background: rgba(255,92,0,.1); }
-    .clip-thumb.url  { background: rgba(59,130,246,.1); }
-    .clip-thumb.img  { background: linear-gradient(135deg, #818cf8, #c4b5fd); }
+.hl-muted { color: var(--text3); }
+.hl-accent {
+  color: var(--accent);
+  text-shadow: 0 0 40px var(--accent-glow);
+}
 
-    .clip-body { flex: 1; min-width: 0; }
-    .clip-main {
-      font-size: .72rem; color: var(--text);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      font-family: var(--mono);
-    }
-    .clip-meta { font-size: .62rem; color: var(--text-3); margin-top: 1px; }
+.hero-sub {
+  font-size: 17px;
+  color: var(--text2);
+  line-height: 1.65;
+  max-width: 480px;
+  margin-bottom: 36px;
+}
+.hero-sub strong { color: var(--text); font-weight: 600; }
 
-    .clip-badge {
-      font-size: .58rem; padding: 2px 6px; border-radius: 4px;
-      font-weight: 700; flex-shrink: 0; text-transform: uppercase; letter-spacing: .04em;
-    }
-    .badge-code { background: rgba(255,92,0,.1); color: var(--accent); }
-    .badge-url  { background: rgba(59,130,246,.1); color: #2563eb; }
-    .badge-img  { background: rgba(124,58,237,.1); color: #7c3aed; }
-    .badge-text { background: var(--bg-2); color: var(--text-2); }
+.hero-cta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+}
 
-    .win-footer {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 8px 12px; border-top: 1px solid var(--border);
-      background: #F7F6F2;
-    }
-    .win-count { font-size: .65rem; color: var(--text-3); }
-    .win-snip {
-      display: flex; align-items: center; gap: 5px;
-      padding: 4px 10px; border-radius: 5px; font-size: .68rem; font-weight: 700;
-      background: var(--bg-1); border: 1px solid var(--border-2); color: var(--text-2);
-      cursor: pointer; transition: background .14s, color .14s, border-color .14s;
-      box-shadow: 0 1px 3px rgba(0,0,0,.06);
-    }
-    .win-snip:hover { background: rgba(255,92,0,.08); color: var(--accent); border-color: rgba(255,92,0,.2); }
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14.5px;
+  font-weight: 700;
+  padding: 13px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 32px rgba(255,92,0,.45), 0 1px 0 rgba(255,255,255,.12) inset;
+  transition: transform .15s var(--ease-out), box-shadow .15s;
+  letter-spacing: -.1px;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 48px rgba(255,92,0,.55), 0 1px 0 rgba(255,255,255,.12) inset;
+}
+.btn-primary:active { transform: translateY(0); }
 
-    .shortcut-badge {
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      margin-top: 18px;
-    }
-    kbd {
-      display: inline-flex; align-items: center; justify-content: center;
-      padding: 4px 9px; border-radius: 5px; font-size: .76rem; font-weight: 600;
-      background: var(--bg-1); border: 1px solid var(--border-2);
-      color: var(--text-2); font-family: var(--font);
-      box-shadow: 0 2px 0 rgba(0,0,0,.1);
-    }
-    .shortcut-label { font-size: .75rem; color: var(--text-3); }
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text2);
+  padding: 13px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  transition: color .15s, border-color .15s, background .15s;
+}
+.btn-ghost:hover { color: var(--text); border-color: var(--border2); background: var(--surface2); }
 
-    /* ─── Stats bar ───────────────────────────────────────────── */
-    .stats-bar {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-1);
-      padding: 30px 5vw;
-      display: flex; justify-content: center; flex-wrap: wrap; gap: 0;
-      position: relative; z-index: 1;
-    }
-    .stat {
-      text-align: center;
-      padding: 8px 52px;
-      border-right: 1px solid var(--border);
-    }
-    .stat:last-child { border-right: none; }
-    @media (max-width: 700px) { .stat { border-right: none; padding: 12px 24px; } }
-    .stat-num {
-      font-size: 2.1rem; font-weight: 900; letter-spacing: -.04em;
-      color: var(--accent); line-height: 1;
-    }
-    .stat-label {
-      font-size: .68rem; color: var(--text-3); margin-top: 4px;
-      text-transform: uppercase; letter-spacing: .1em;
-    }
+.hero-trust {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text3);
+}
+.trust-check { color: var(--accent); margin-right: 4px; }
+.trust-sep { color: var(--text3); opacity: .4; }
 
-    /* ─── Interrupt ───────────────────────────────────────────── */
-    .interrupt {
-      padding: 100px 5vw;
-      text-align: center;
-      position: relative; z-index: 1;
-      background: var(--bg-1);
-      border-bottom: 1px solid var(--border);
-    }
-    .interrupt-hl {
-      font-size: clamp(1.55rem, 3.2vw, 2.6rem);
-      font-weight: 800; letter-spacing: -.03em; line-height: 1.35;
-      max-width: 760px; margin: 0 auto;
-    }
-    .interrupt-hl .hi { color: var(--accent); }
-    .interrupt-sub {
-      margin-top: 18px;
-      font-size: .98rem; color: var(--text-2); line-height: 1.7;
-      max-width: 460px; margin-left: auto; margin-right: auto;
-    }
+/* ─── Hero visual / App mockup ──────────────────────────────── */
+.hero-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+}
 
-    /* ─── Shared section layout ───────────────────────────────── */
-    .section {
-      padding: 96px 5vw;
-      max-width: 1200px; margin: 0 auto;
-      position: relative; z-index: 1;
-    }
-    .section-eyebrow {
-      font-size: .68rem; font-weight: 800; letter-spacing: .15em;
-      text-transform: uppercase; color: var(--accent);
-      margin-bottom: 12px;
-    }
-    .section-heading {
-      font-size: clamp(1.75rem, 3.2vw, 2.6rem);
-      font-weight: 800; letter-spacing: -.03em; line-height: 1.1;
-    }
-    .section-sub {
-      margin-top: 12px;
-      font-size: 1rem; color: var(--text-2); line-height: 1.68;
-      max-width: 500px;
-    }
+.app-float {
+  animation: float 5s ease-in-out infinite;
+  filter: drop-shadow(0 40px 80px rgba(0,0,0,.8)) drop-shadow(0 0 40px rgba(255,92,0,.12));
+}
 
-    /* ─── Features ────────────────────────────────────────────── */
-    .features-wrap { border-top: 1px solid var(--border); }
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate3d(0,.5,0,-1deg); }
+  50%       { transform: translateY(-10px) rotate3d(0,.5,0,1deg); }
+}
 
-    .feat-grid {
-      margin-top: 52px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-    }
-    @media (max-width: 900px) { .feat-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 560px) { .feat-grid { grid-template-columns: 1fr; } }
+/* App window shell — matches the actual app's warm beige palette */
+.app-window {
+  width: 360px;
+  background: #f5f4f0;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,.12);
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
 
-    .feat {
-      background: var(--bg-1);
-      padding: 32px 28px;
-      transition: background .18s;
-    }
-    .feat:hover { background: #FDFCF9; }
-    .feat-icon {
-      width: 44px; height: 44px; border-radius: 10px;
-      background: rgba(255,92,0,.08); border: 1px solid rgba(255,92,0,.14);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.25rem; margin-bottom: 20px;
-    }
-    .feat h3 { font-size: .92rem; font-weight: 700; letter-spacing: -.01em; margin-bottom: 7px; }
-    .feat p  { font-size: .83rem; color: var(--text-2); line-height: 1.65; }
+.win-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 13px;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0,0,0,.07);
+}
 
-    /* ─── Snip spotlight ──────────────────────────────────────── */
-    .spotlight {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 64px; align-items: center;
-      margin-top: 80px; padding-top: 80px;
-      border-top: 1px solid var(--border);
-    }
-    @media (max-width: 800px) { .spotlight { grid-template-columns: 1fr; gap: 36px; } }
+.win-icon {
+  width: 22px; height: 22px;
+  background: #FF5C00;
+  border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+}
 
-    .spot-visual {
-      position: relative;
-      background: #1A1040;
-      border: 1px solid rgba(0,0,0,.12);
-      border-radius: 14px;
-      overflow: hidden;
-      aspect-ratio: 16/10;
-      box-shadow: 0 8px 40px rgba(0,0,0,.15);
-    }
-    .spot-bg {
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, #0c0c2a 0%, #17103a 50%, #0c0c2a 100%);
-    }
-    .spot-code {
-      position: absolute; top: 12%; left: 7%;
-      font-family: var(--mono); font-size: .6rem;
-      color: rgba(255,255,255,.22); line-height: 1.9;
-    }
-    .spot-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.44); }
-    .spot-sel {
-      position: absolute;
-      top: 22%; left: 17%; width: 59%; height: 48%;
-      border: 2px solid var(--accent);
-      box-shadow: 0 0 0 9999px rgba(0,0,0,.4);
-      animation: selPulse 3s ease-in-out infinite;
-    }
-    .spot-corner {
-      position: absolute; width: 10px; height: 10px;
-      border-color: #fff; border-style: solid;
-    }
-    .spot-corner.tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
-    .spot-corner.tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
-    .spot-corner.bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
-    .spot-corner.br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
-    .spot-dims {
-      position: absolute; top: calc(22% - 23px); left: 17%;
-      font-size: .62rem; font-weight: 700; font-family: var(--mono);
-      background: rgba(0,0,0,.75); color: rgba(255,255,255,.9);
-      padding: 2px 7px; border-radius: 4px;
-    }
-    .spot-hint {
-      position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
-      font-size: .62rem; color: rgba(255,255,255,.5);
-      background: rgba(0,0,0,.6); padding: 4px 12px; border-radius: 20px;
-      white-space: nowrap;
-    }
+.win-title-text {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #111;
+  flex: 1;
+}
 
-    .spot-text h3 {
-      font-size: clamp(1.5rem, 2.4vw, 2rem);
-      font-weight: 800; letter-spacing: -.03em; line-height: 1.15; margin-bottom: 14px;
-    }
-    .spot-text p { font-size: .88rem; color: var(--text-2); line-height: 1.75; margin-bottom: 12px; }
-    .check-list { list-style: none; margin-top: 8px; }
-    .check-list li {
-      display: flex; align-items: flex-start; gap: 10px;
-      font-size: .86rem; color: var(--text-2); padding: 5px 0;
-    }
-    .check-list li::before {
-      content: "";
-      flex-shrink: 0; margin-top: 3px;
-      width: 15px; height: 15px; border-radius: 50%;
-      background: var(--green-bg); border: 1px solid var(--green-border);
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3 7l3 3 5-5' stroke='%23059669' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    }
+.win-snip-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #5a5a5a;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 5px;
+  padding: 4px 8px;
+}
 
-    /* ─── How it works ─────────────────────────────────────────── */
-    .how-wrap { border-top: 1px solid var(--border); }
-    .steps {
-      margin-top: 52px;
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 0;
-      border: 1px solid var(--border); border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0,0,0,.05);
-    }
-    @media (max-width: 800px) { .steps { grid-template-columns: 1fr; } }
-    .step {
-      padding: 28px 22px;
-      background: var(--bg-1);
-      border-right: 1px solid var(--border);
-    }
-    .step:last-child { border-right: none; }
-    @media (max-width: 800px) {
-      .step { border-right: none; border-bottom: 1px solid var(--border); }
-      .step:last-child { border-bottom: none; }
-    }
-    .step-num {
-      font-size: 2.8rem; font-weight: 900; letter-spacing: -.06em; line-height: 1;
-      color: var(--accent); opacity: .25; margin-bottom: 16px;
-    }
-    .step h3 { font-size: .88rem; font-weight: 700; margin-bottom: 6px; }
-    .step p  { font-size: .78rem; color: var(--text-2); line-height: 1.6; }
+.win-close {
+  width: 18px; height: 18px;
+  background: #e5e4e0;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
 
-    /* ─── Testimonials ─────────────────────────────────────────── */
-    .t-wrap { border-top: 1px solid var(--border); }
-    .t-grid {
-      margin-top: 52px;
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
-    }
-    @media (max-width: 800px) { .t-grid { grid-template-columns: 1fr; } }
-    .t-card {
-      background: var(--bg-1);
-      border: 1px solid var(--border);
-      border-radius: 14px; padding: 24px;
-      box-shadow: 0 1px 4px rgba(0,0,0,.05);
-      transition: border-color .18s, transform .18s, box-shadow .18s;
-    }
-    .t-card:hover {
-      border-color: rgba(0,0,0,.16); transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(0,0,0,.09);
-    }
-    .t-stars { color: var(--accent); font-size: .82rem; margin-bottom: 12px; letter-spacing: 2px; }
-    .t-text { font-size: .86rem; color: var(--text-2); line-height: 1.72; margin-bottom: 20px; }
-    .t-author { display: flex; align-items: center; gap: 10px; }
-    .t-avatar {
-      width: 33px; height: 33px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: .78rem; font-weight: 800; flex-shrink: 0; color: #fff;
-    }
-    .t-name { font-size: .8rem; font-weight: 700; }
-    .t-role { font-size: .7rem; color: var(--text-3); }
+.win-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0,0,0,.07);
+}
 
-    /* ─── Pricing ──────────────────────────────────────────────── */
-    .price-wrap-outer { border-top: 1px solid var(--border); }
-    .price-center { margin-top: 52px; display: flex; justify-content: center; }
-    .price-card {
-      position: relative;
-      background: var(--bg-1);
-      border: 1px solid var(--border-2);
-      border-radius: 20px;
-      padding: 44px 48px;
-      max-width: 440px; width: 100%;
-      overflow: hidden;
-      box-shadow: 0 4px 24px rgba(0,0,0,.08);
-    }
-    .price-card::before {
-      content: "";
-      position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), var(--accent), transparent);
-      animation: shimmer 4s linear infinite;
-      background-size: 200%;
-    }
-    .price-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 4px 10px; border-radius: 6px;
-      background: var(--green-bg); border: 1px solid var(--green-border);
-      color: var(--green); font-size: .67rem; font-weight: 800;
-      text-transform: uppercase; letter-spacing: .1em;
-      margin-bottom: 20px;
-    }
-    .price-badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
-    .price-name { font-size: 1.05rem; font-weight: 700; color: var(--text-2); margin-bottom: 12px; }
-    .price-amount { display: flex; align-items: flex-start; gap: 2px; margin-bottom: 4px; }
-    .price-curr { font-size: 1.3rem; font-weight: 700; color: var(--text-2); margin-top: 14px; }
-    .price-num {
-      font-size: 5.5rem; font-weight: 900; line-height: 1; letter-spacing: -.06em;
-      color: var(--text);
-    }
-    .price-period { font-size: .8rem; color: var(--text-3); margin-bottom: 28px; }
-    .price-items {
-      list-style: none;
-      border-top: 1px solid var(--border); padding-top: 22px; margin-bottom: 30px;
-    }
-    .price-items li {
-      display: flex; align-items: center; gap: 10px;
-      font-size: .86rem; color: var(--text-2); padding: 5px 0;
-    }
-    .pi-check {
-      flex-shrink: 0; width: 17px; height: 17px; border-radius: 50%;
-      background: var(--green-bg); border: 1px solid var(--green-border);
-      display: flex; align-items: center; justify-content: center;
-      font-size: .52rem; color: var(--green); font-weight: 900;
-    }
-    .btn-buy {
-      display: block; width: 100%; padding: 14px;
-      border-radius: 10px; font-size: .95rem; font-weight: 700;
-      background: var(--accent); color: #fff;
-      text-decoration: none; text-align: center;
-      box-shadow: 0 4px 20px rgba(255,92,0,.28);
-      transition: background .18s, transform .14s, box-shadow .18s;
-      letter-spacing: -.01em;
-    }
-    .btn-buy:hover {
-      background: var(--accent-2); transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(255,92,0,.34);
-    }
-    .price-note { text-align: center; margin-top: 12px; font-size: .7rem; color: var(--text-3); }
+.win-tab {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #5a5a5a;
+  padding: 4px 9px;
+  border-radius: 7px;
+  transition: background .12s, color .12s;
+}
 
-    /* ─── FAQ ──────────────────────────────────────────────────── */
-    .faq-wrap { border-top: 1px solid var(--border); }
-    .faq-list { max-width: 660px; margin: 48px auto 0; }
-    .faq-item { border-bottom: 1px solid var(--border); }
-    .faq-q {
-      width: 100%; background: none; border: none; color: var(--text);
-      text-align: left; padding: 18px 0; font-size: .88rem; font-weight: 600;
-      cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-      gap: 12px; font-family: var(--font);
-    }
-    .faq-icon { color: var(--text-3); transition: transform .2s, color .2s; flex-shrink: 0; font-size: 1rem; }
-    .faq-item.open .faq-icon { transform: rotate(45deg); color: var(--accent); }
-    .faq-a {
-      max-height: 0; overflow: hidden;
-      transition: max-height .32s ease, padding .32s;
-      font-size: .86rem; color: var(--text-2); line-height: 1.75;
-    }
-    .faq-item.open .faq-a { max-height: 240px; padding-bottom: 18px; }
+.win-tab.active {
+  background: rgba(255,92,0,0.09);
+  color: #FF5C00;
+  border: 1px solid rgba(255,92,0,.2);
+}
 
-    /* ─── CTA banner ──────────────────────────────────────────── */
-    .cta-outer { padding: 0 5vw 96px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
-    .cta-banner {
-      position: relative;
-      background: var(--accent);
-      border-radius: 20px;
-      padding: 76px 5vw;
-      text-align: center;
-      overflow: hidden;
-    }
-    .cta-banner::before {
-      content: "";
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(255,255,255,.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .cta-banner h2 {
-      font-size: clamp(1.7rem, 3.2vw, 2.6rem);
-      font-weight: 800; letter-spacing: -.03em; margin-bottom: 12px;
-      color: #fff;
-    }
-    .cta-banner p {
-      color: rgba(255,255,255,.8); max-width: 400px;
-      margin: 0 auto 32px; font-size: .95rem; line-height: 1.65;
-    }
-    .btn-white {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 13px 26px; border-radius: 9px; font-size: .95rem; font-weight: 700;
-      background: #fff; color: var(--accent); text-decoration: none;
-      box-shadow: 0 4px 20px rgba(0,0,0,.15);
-      transition: transform .14s, box-shadow .18s;
-      letter-spacing: -.01em;
-    }
-    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.2); }
+.win-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255,92,0,.1);
+  color: #FF5C00;
+}
 
-    /* ─── Footer ───────────────────────────────────────────────── */
-    footer {
-      border-top: 1px solid var(--border);
-      background: var(--bg-1);
-      padding: 34px 5vw;
-      display: flex; flex-wrap: wrap;
-      align-items: center; justify-content: space-between; gap: 16px;
-      font-size: .76rem; color: var(--text-3);
-      position: relative; z-index: 1;
-    }
-    .footer-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--text-2); }
-    .footer-logo-icon {
-      width: 21px; height: 21px; border-radius: 5px;
-      background: var(--accent);
-      display: flex; align-items: center; justify-content: center; font-size: .63rem;
-    }
-    .footer-links { display: flex; gap: 16px; }
-    .footer-links a { color: var(--text-3); text-decoration: none; transition: color .18s; }
-    .footer-links a:hover { color: var(--text-2); }
+.win-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-bottom: 1px solid rgba(0,0,0,.07);
+  background: #f5f4f0;
+  font-size: 12px;
+  color: #9a9a9a;
+}
 
-    /* ─── Animations ────────────────────────────────────────────── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--accent); }
-      50%       { opacity: .35; box-shadow: 0 0 2px var(--accent); }
-    }
-    @keyframes clipSlideIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes selPulse {
-      0%, 100% { box-shadow: 0 0 0 9999px rgba(0,0,0,.4), 0 0 18px rgba(255,92,0,.3); }
-      50%       { box-shadow: 0 0 0 9999px rgba(0,0,0,.56), 0 0 28px rgba(255,92,0,.5); }
-    }
-    @keyframes shimmer {
-      0%   { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
-    }
+.clip-list {
+  min-height: 200px;
+}
 
-    /* Scroll reveal */
-    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .58s ease, transform .58s ease; }
-    .reveal.visible { opacity: 1; transform: none; }
+.clip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 12px;
+  border-bottom: 1px solid rgba(0,0,0,.05);
+  transition: background .1s;
+}
 
-    /* Hero stagger */
-    .hero-left > * { animation: fadeUp .65s ease both; }
-    .hero-tag      { animation-delay: 0s; }
-    .hero-headline { animation-delay: .07s; }
-    .hero-sub      { animation-delay: .13s; }
-    .hero-stats    { animation-delay: .17s; }
-    .hero-cta      { animation-delay: .22s; }
-    .hero-trust    { animation-delay: .28s; }
-    .hero-visual   { animation: fadeUp .65s .28s ease both; }
+.clip-item.highlight { background: rgba(0,0,0,.03); }
 
-    @media (max-width: 600px) {
-      nav .nav-links a:not(.btn-nav) { display: none; }
-    }
-  </style>
+.clip-icon {
+  width: 40px; height: 32px;
+  background: #edece8;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.clip-body { flex: 1; min-width: 0; }
+
+.clip-text {
+  font-size: 12px;
+  color: #111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+  font-weight: 400;
+}
+
+.clip-time {
+  font-size: 10.5px;
+  color: #9a9a9a;
+}
+
+.win-footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 13px;
+  background: #ffffff;
+  border-top: 1px solid rgba(0,0,0,.07);
+  font-size: 11px;
+  color: #9a9a9a;
+}
+
+.win-clear { color: rgba(220,50,50,.65); font-size: 11px; }
+
+/* Shortcut badge below the window */
+.shortcut-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 100px;
+  padding: 8px 18px;
+  font-size: 13px;
+  color: var(--text2);
+}
+
+.shortcut-badge kbd {
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  padding: 2px 7px;
+  font-size: 12px;
+  font-family: inherit;
+  color: var(--text);
+  box-shadow: 0 2px 0 var(--border2);
+}
+
+/* ─── Marquee strip ─────────────────────────────────────────── */
+.marquee-wrap {
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  padding: 14px 0;
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  gap: 0;
+  animation: marquee 28s linear infinite;
+  width: max-content;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 32px;
+  font-size: 13px;
+  color: var(--text3);
+  white-space: nowrap;
+  border-right: 1px solid var(--border);
+}
+
+.marquee-item span { color: var(--accent); }
+
+/* ─── Stats bar ─────────────────────────────────────────────── */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  max-width: 900px;
+  margin: 80px auto 0;
+  padding: 0 40px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.stat-item {
+  padding: 28px 0;
+  text-align: center;
+  border-right: 1px solid var(--border);
+}
+.stat-item:last-child { border-right: none; }
+
+.stat-num {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.stat-num .accent { color: var(--accent); }
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text3);
+  letter-spacing: .3px;
+}
+
+/* ─── Interrupt quote ───────────────────────────────────────── */
+.interrupt {
+  max-width: 820px;
+  margin: 100px auto;
+  padding: 0 40px;
+  text-align: center;
+}
+
+.interrupt-hl {
+  font-size: clamp(24px, 3.5vw, 38px);
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1.25;
+  color: var(--text2);
+  margin-bottom: 20px;
+}
+
+.interrupt-hl .hi {
+  color: var(--text);
+  background: linear-gradient(135deg, var(--text) 0%, rgba(240,237,232,.6) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.interrupt-sub {
+  font-size: 16px;
+  color: var(--text3);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* ─── Section layout ────────────────────────────────────────── */
+.section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 100px 40px;
+}
+
+.eyebrow {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.section-heading {
+  font-size: clamp(32px, 4vw, 50px);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.section-sub {
+  font-size: 16px;
+  color: var(--text2);
+  max-width: 560px;
+  margin-bottom: 56px;
+  line-height: 1.65;
+}
+
+/* ─── Features bento grid ───────────────────────────────────── */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
+  gap: 12px;
+}
+
+.bento-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  transition: border-color .2s, background .2s, transform .2s var(--ease-out);
+  position: relative;
+  overflow: hidden;
+}
+
+.bento-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,92,0,.06) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+.bento-card:hover::before { opacity: 1; }
+.bento-card:hover {
+  border-color: rgba(255,92,0,.25);
+  transform: translateY(-3px);
+}
+
+.bento-wide { grid-column: span 2; }
+
+.bento-icon {
+  width: 46px; height: 46px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(255,92,0,.2);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.bento-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -.4px;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+.bento-card p {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.65;
+}
+
+/* Wide card extra content */
+.bento-demo {
+  margin-top: 24px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text2);
+  overflow: hidden;
+  max-height: 80px;
+}
+
+.bento-demo .demo-line { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bento-demo .demo-line + .demo-line { margin-top: 4px; opacity: .5; }
+.bento-demo .kw { color: #7dd3fc; }
+.bento-demo .fn { color: #86efac; }
+.bento-demo .str { color: #fde68a; }
+.bento-demo .cm { color: #6b7280; }
+
+/* ─── Snip spotlight ────────────────────────────────────────── */
+.spotlight {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  margin-top: 60px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 56px;
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlight::before {
+  content: '';
+  position: absolute;
+  top: -80px; left: -80px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(255,92,0,.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.spot-visual {
+  position: relative;
+  background: #1a1d23;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 16/10;
+  border: 1px solid rgba(255,255,255,.06);
+}
+
+.spot-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+}
+
+.spot-code-bg {
+  padding: 24px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: #8b9094;
+}
+.spot-code-bg .kw  { color: #7dd3fc; }
+.spot-code-bg .fn  { color: #86efac; }
+.spot-code-bg .str { color: #fde68a; }
+.spot-code-bg .pn  { color: #e5e7eb; }
+
+.spot-sel {
+  position: absolute;
+  top: 22%; left: 10%;
+  width: 72%; height: 52%;
+  border: 2px solid #3b9eff;
+  background: rgba(59,158,255,.08);
+}
+
+.spot-corner {
+  position: absolute;
+  width: 10px; height: 10px;
+  border-color: white;
+  border-style: solid;
+}
+.spot-corner.tl { top: -2px; left: -2px; border-width: 3px 0 0 3px; }
+.spot-corner.tr { top: -2px; right: -2px; border-width: 3px 3px 0 0; }
+.spot-corner.bl { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; }
+.spot-corner.br { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; }
+
+.spot-dims {
+  position: absolute;
+  bottom: calc(22% + 52% + 8px);
+  left: 10%;
+  background: rgba(0,0,0,.75);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.spot-hint {
+  position: absolute;
+  top: 10px;
+  left: 50%; transform: translateX(-50%);
+  background: rgba(0,0,0,.72);
+  color: #fff;
+  font-size: 11.5px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+.spot-text h3 {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+
+.spot-text p {
+  font-size: 15px;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.check-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.check-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text2);
+}
+
+.check-list li::before {
+  content: '✓';
+  color: var(--accent);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ─── How it works ──────────────────────────────────────────── */
+.how-wrap { background: var(--bg); }
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.step {
+  padding: 36px 28px;
+  border-right: 1px solid var(--border);
+  position: relative;
+  transition: background .2s;
+}
+.step:last-child { border-right: none; }
+.step:hover { background: var(--surface2); }
+
+.step-num {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--accent);
+  margin-bottom: 16px;
+  font-family: var(--mono);
+}
+
+.step h3 {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -.3px;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+.step p {
+  font-size: 13.5px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+.step code {
+  font-family: var(--mono);
+  font-size: .8em;
+  color: var(--text2);
+  background: var(--surface3);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+/* ─── Testimonials ──────────────────────────────────────────── */
+.t-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.t-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: border-color .2s, transform .2s var(--ease-out);
+}
+.t-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-3px);
+}
+
+.t-stars { color: var(--accent); font-size: 14px; letter-spacing: 2px; }
+
+.t-text {
+  font-size: 14.5px;
+  color: var(--text2);
+  line-height: 1.7;
+  flex: 1;
+}
+
+.t-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.t-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.t-name { font-size: 13.5px; font-weight: 600; }
+.t-role { font-size: 12px; color: var(--text3); }
+
+/* ─── Pricing ───────────────────────────────────────────────── */
+.price-outer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.price-center {
+  display: flex;
+  justify-content: center;
+}
+
+.price-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 24px;
+  padding: 48px;
+  max-width: 480px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 80px rgba(255,92,0,.08);
+}
+
+.price-card::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: -1px; right: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+}
+
+.price-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid rgba(255,92,0,.25);
+  border-radius: 100px;
+  padding: 4px 12px;
+  margin-bottom: 20px;
+}
+.price-badge-dot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+.price-name { font-size: 15px; font-weight: 600; color: var(--text2); margin-bottom: 16px; }
+
+.price-amount {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+.price-curr { font-size: 28px; font-weight: 700; color: var(--text); margin-top: 10px; }
+.price-num  { font-size: 80px; font-weight: 900; letter-spacing: -4px; color: var(--text); }
+
+.price-period {
+  font-size: 13px;
+  color: var(--text3);
+  margin-bottom: 32px;
+}
+
+.price-items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin-bottom: 32px;
+}
+
+.price-items li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text2);
+}
+
+.pi-check {
+  color: var(--accent);
+  font-weight: 700;
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.btn-buy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 15px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 32px rgba(255,92,0,.4);
+  transition: transform .15s var(--ease-out), box-shadow .15s;
+  letter-spacing: -.2px;
+  margin-bottom: 14px;
+}
+.btn-buy:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 48px rgba(255,92,0,.5);
+}
+
+.price-note { font-size: 12px; color: var(--text3); text-align: center; }
+
+/* ─── FAQ ───────────────────────────────────────────────────── */
+.faq-list {
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  transition: background .15s;
+}
+.faq-item:last-child { border-bottom: none; }
+.faq-item.open { background: var(--surface2); }
+
+.faq-q {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: left;
+  transition: color .15s;
+}
+.faq-q:hover { color: var(--text); }
+
+.faq-icon {
+  width: 24px; height: 24px;
+  background: var(--surface3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text2);
+  flex-shrink: 0;
+  transition: transform .22s var(--ease-out), background .15s;
+}
+
+.faq-item.open .faq-icon {
+  transform: rotate(45deg);
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  font-size: 14.5px;
+  color: var(--text2);
+  line-height: 1.7;
+  transition: max-height .3s var(--ease-out), padding .3s var(--ease-out);
+  padding: 0 28px;
+}
+
+.faq-item.open .faq-a {
+  max-height: 220px;
+  padding: 0 28px 22px;
+}
+
+/* ─── CTA Banner ────────────────────────────────────────────── */
+.cta-outer {
+  padding: 100px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-outer::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px; height: 400px;
+  background: radial-gradient(ellipse, rgba(255,92,0,.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.cta-inner {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cta-inner h2 {
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 900;
+  letter-spacing: -2px;
+  margin-bottom: 16px;
+  line-height: 1.05;
+}
+
+.cta-inner p {
+  font-size: 16px;
+  color: var(--text2);
+  margin-bottom: 36px;
+  line-height: 1.65;
+}
+
+.btn-white {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 15px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 32px rgba(255,92,0,.45);
+  transition: transform .15s var(--ease-out), box-shadow .15s;
+  letter-spacing: -.2px;
+}
+.btn-white:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 48px rgba(255,92,0,.55);
+}
+
+/* ─── Footer ────────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  max-width: 1160px;
+  margin: 0 auto;
+  font-size: 13px;
+  color: var(--text3);
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: var(--text2);
+  font-size: 14px;
+}
+
+.footer-logo-icon {
+  width: 24px; height: 24px;
+  background: var(--accent);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.footer-links a {
+  color: var(--text3);
+  font-size: 13px;
+  transition: color .15s;
+}
+.footer-links a:hover { color: var(--text2); }
+
+/* ─── Scroll reveal ─────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .6s var(--ease-out), transform .6s var(--ease-out);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Responsive ────────────────────────────────────────────── */
+@media (max-width: 920px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 120px 24px 80px;
+    text-align: center;
+    gap: 48px;
+  }
+  .hero::before { display: none; }
+  .hero-sub, .hero-trust { max-width: 100%; }
+  .hero-cta { justify-content: center; }
+  .hero-trust { justify-content: center; }
+  .app-float { transform: none; animation: float-mobile 5s ease-in-out infinite; }
+  @keyframes float-mobile { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .stat-item:nth-child(2) { border-right: none; }
+
+  .bento { grid-template-columns: 1fr; }
+  .bento-wide { grid-column: span 1; }
+
+  .spotlight { grid-template-columns: 1fr; gap: 32px; padding: 32px; }
+
+  .steps { grid-template-columns: 1fr 1fr; }
+  .step:nth-child(2) { border-right: none; }
+  .step:nth-child(3) { border-top: 1px solid var(--border); }
+  .step:nth-child(4) { border-top: 1px solid var(--border); border-right: none; }
+
+  .t-grid { grid-template-columns: 1fr; }
+
+  nav { padding: 0 20px; }
+  .nav-links a:not(.btn-nav) { display: none; }
+
+  footer { flex-direction: column; align-items: center; text-align: center; }
+}
+
+@media (max-width: 560px) {
+  .steps { grid-template-columns: 1fr; }
+  .step { border-right: none !important; border-top: 1px solid var(--border) !important; }
+  .step:first-child { border-top: none !important; }
+  .app-window { width: 310px; }
+  .price-card { padding: 32px 24px; }
+  .stats-bar { padding: 0 20px; }
+}
+</style>
 </head>
+
 <body>
 
 <!-- ─── Nav ──────────────────────────────────────────────────── -->
@@ -763,17 +1298,17 @@
 </nav>
 
 <!-- ─── Hero ──────────────────────────────────────────────────── -->
-<section class="hero">
+<section class="hero" style="position:relative;">
   <div class="hero-left">
     <div class="hero-tag">
-      <span class="dot"></span>
-      For macOS 13 Ventura+
+      <span class="tag-dot"></span>
+      Native Swift · macOS 13 Ventura+
     </div>
 
     <h1 class="hero-headline">
-      ⌘V only remembers<br/>
-      <span class="hl-dim">one thing.</span><br/>
-      <span class="hl-accent">maClip</span> remembers fifty.
+      ⌘V only remembers<br>
+      <span class="hl-muted">one thing.</span><br>
+      <span class="hl-accent">maClip</span> remembers&nbsp;fifty.
     </h1>
 
     <p class="hero-sub">
@@ -781,21 +1316,6 @@
       <strong>Text, code, images</strong> — all within reach with one shortcut.
       Zero cloud, zero subscription.
     </p>
-
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <div class="hero-stat-num">50</div>
-        <div class="hero-stat-label">items tracked</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">&lt;5 MB</div>
-        <div class="hero-stat-label">memory use</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">$5</div>
-        <div class="hero-stat-label">one-time · forever</div>
-      </div>
-    </div>
 
     <div class="hero-cta">
       <a href="#pricing" class="btn-primary">
@@ -809,79 +1329,113 @@
     </div>
 
     <div class="hero-trust">
-      <span class="trust-item"><span class="trust-check">✓</span> One-time payment</span>
+      <span><span class="trust-check">✓</span> One-time payment</span>
       <span class="trust-sep">·</span>
-      <span class="trust-item"><span class="trust-check">✓</span> macOS only</span>
+      <span><span class="trust-check">✓</span> All your Macs</span>
       <span class="trust-sep">·</span>
-      <span class="trust-item"><span class="trust-check">✓</span> 100% local</span>
+      <span><span class="trust-check">✓</span> 100% local</span>
       <span class="trust-sep">·</span>
-      <span class="trust-item"><span class="trust-check">✓</span> Lifetime updates</span>
+      <span><span class="trust-check">✓</span> Lifetime updates</span>
     </div>
   </div>
 
   <div class="hero-visual" aria-hidden="true">
-    <div class="hero-glow"></div>
-    <div style="width:100%;max-width:355px">
+    <div class="app-float">
       <div class="app-window">
-        <div class="win-bar">
-          <span class="win-dot r"></span>
-          <span class="win-dot y"></span>
-          <span class="win-dot g"></span>
-          <span class="win-title">maClip</span>
+        <!-- Header -->
+        <div class="win-header">
+          <div class="win-icon">📋</div>
+          <span class="win-title-text">maClip</span>
+          <div class="win-snip-btn">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/></svg>
+            Snip
+          </div>
+          <div class="win-close">
+            <svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M2 2l6 6M8 2l-6 6" stroke="#999" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
         </div>
+        <!-- Tabs -->
         <div class="win-tabs">
-          <div class="win-tab active">History <span class="win-tab-badge">5</span></div>
+          <div class="win-tab active">History <span class="win-badge" id="winBadge">5</span></div>
           <div class="win-tab">Saved</div>
         </div>
+        <!-- Search -->
         <div class="win-search">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           Search clipboard…
         </div>
+        <!-- List -->
         <div class="clip-list" id="clipList"></div>
-        <div class="win-footer">
-          <span class="win-count" id="clipCount">5 items</span>
-          <button class="win-snip" type="button">
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/></svg>
-            Snip
-          </button>
+        <!-- Footer -->
+        <div class="win-footer-bar">
+          <span id="winCount">5 items</span>
+          <span class="win-clear">Clear History</span>
         </div>
       </div>
-      <div class="shortcut-badge">
-        <kbd>⌘</kbd>
-        <kbd>⇧</kbd>
-        <kbd>V</kbd>
-        <span class="shortcut-label">open from any app</span>
-      </div>
+    </div>
+
+    <div class="shortcut-badge">
+      <kbd>⌘</kbd>
+      <kbd>⇧</kbd>
+      <kbd>V</kbd>
+      <span style="margin-left:4px;font-size:12px;">from any app</span>
     </div>
   </div>
 </section>
 
+<!-- ─── Marquee ───────────────────────────────────────────────── -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee-track" id="marqueeTrack">
+    <span class="marquee-item"><span>⌘⇧V</span> Global shortcut</span>
+    <span class="marquee-item"><span>50</span> Clipboard items</span>
+    <span class="marquee-item"><span>✂️</span> Built-in Snip tool</span>
+    <span class="marquee-item"><span>🔍</span> Instant search</span>
+    <span class="marquee-item"><span>🖼</span> Image support</span>
+    <span class="marquee-item"><span>🔒</span> 100% private</span>
+    <span class="marquee-item"><span>🖥</span> Multi-display</span>
+    <span class="marquee-item"><span>$5</span> One-time forever</span>
+    <span class="marquee-item"><span>⚡</span> Native Swift</span>
+    <span class="marquee-item"><span>🔖</span> Save items forever</span>
+    <!-- duplicate for seamless loop -->
+    <span class="marquee-item"><span>⌘⇧V</span> Global shortcut</span>
+    <span class="marquee-item"><span>50</span> Clipboard items</span>
+    <span class="marquee-item"><span>✂️</span> Built-in Snip tool</span>
+    <span class="marquee-item"><span>🔍</span> Instant search</span>
+    <span class="marquee-item"><span>🖼</span> Image support</span>
+    <span class="marquee-item"><span>🔒</span> 100% private</span>
+    <span class="marquee-item"><span>🖥</span> Multi-display</span>
+    <span class="marquee-item"><span>$5</span> One-time forever</span>
+    <span class="marquee-item"><span>⚡</span> Native Swift</span>
+    <span class="marquee-item"><span>🔖</span> Save items forever</span>
+  </div>
+</div>
+
 <!-- ─── Stats bar ─────────────────────────────────────────────── -->
-<div class="stats-bar reveal">
-  <div class="stat">
-    <div class="stat-num">50</div>
+<div class="stats-bar reveal" style="margin:80px auto;">
+  <div class="stat-item">
+    <div class="stat-num">5<span class="accent">0</span></div>
     <div class="stat-label">items tracked</div>
   </div>
-  <div class="stat">
-    <div class="stat-num">&lt;5 MB</div>
+  <div class="stat-item">
+    <div class="stat-num">&lt;5<span style="font-size:20px;letter-spacing:0"> MB</span></div>
     <div class="stat-label">memory footprint</div>
   </div>
-  <div class="stat">
+  <div class="stat-item">
     <div class="stat-num">0</div>
     <div class="stat-label">cloud dependencies</div>
   </div>
-  <div class="stat">
-    <div class="stat-num">$5</div>
+  <div class="stat-item">
+    <div class="stat-num"><span class="accent">$5</span></div>
     <div class="stat-label">one-time · forever</div>
   </div>
 </div>
 
-<!-- ─── Interrupt ─────────────────────────────────────────────── -->
+<!-- ─── Interrupt quote ───────────────────────────────────────── -->
 <div class="interrupt reveal">
   <p class="interrupt-hl">
     "How many <span class="hi">code snippets, API keys,</span><br/>
-    and <span class="hi">URLs</span> have you re-copied because<br/>
-    ⌘V only holds one thing?"
+    and <span class="hi">URLs</span> have you re-copied<br/>
+    because ⌘V only holds one thing?"
   </p>
   <p class="interrupt-sub">
     maClip silently catches everything. You'll never retype something you already copied.
@@ -889,54 +1443,65 @@
 </div>
 
 <!-- ─── Features ─────────────────────────────────────────────── -->
-<section class="section features-wrap" id="features">
-  <div class="section-eyebrow">Features</div>
+<section class="section" id="features">
+  <div class="eyebrow">Features</div>
   <h2 class="section-heading">Built for people who copy things.</h2>
   <p class="section-sub">No bloat, no subscription, no data leaving your Mac. Just a better clipboard.</p>
 
-  <div class="feat-grid reveal">
-    <div class="feat">
-      <div class="feat-icon">⌨️</div>
-      <h3>Global Shortcut</h3>
-      <p>⌘ Shift V from any app, any window. Your clipboard history appears instantly — no menu bar clicking required.</p>
+  <div class="bento reveal">
+    <!-- Wide card: Global shortcut -->
+    <div class="bento-card bento-wide">
+      <div class="bento-icon">⌨️</div>
+      <h3>Global Shortcut — ⌘⇧V</h3>
+      <p>Hit <strong style="color:var(--text)">⌘ Shift V</strong> from any app, any window. Your full clipboard history appears instantly — no menu bar clicking, no switching apps.</p>
+      <div class="bento-demo">
+        <span class="demo-line"><span class="kw">const</span> <span class="fn">handleSubmit</span> = <span class="kw">async</span> (e) =&gt; {</span>
+        <span class="demo-line">&nbsp;&nbsp;<span class="kw">const</span> token = <span class="str">"sk-prod-xK8mN2pL4qR9"</span></span>
+      </div>
     </div>
-    <div class="feat">
-      <div class="feat-icon">📋</div>
+
+    <!-- Single: 50-item history -->
+    <div class="bento-card">
+      <div class="bento-icon">📋</div>
       <h3>50-Item History</h3>
-      <p>Tracks the last 50 copied items automatically. Text, code snippets, URLs, images — all there when you need them.</p>
+      <p>Tracks the last 50 copied items automatically — text, code snippets, URLs, images. All there when you need them.</p>
     </div>
-    <div class="feat">
-      <div class="feat-icon">✂️</div>
-      <h3>Built-in Snip Tool</h3>
-      <p>Capture any screen region with the Snip button. The screenshot lands straight into your clipboard history, ready to paste.</p>
+
+    <!-- Single: Saved items -->
+    <div class="bento-card">
+      <div class="bento-icon">🔖</div>
+      <h3>Save Items Forever</h3>
+      <p>Hover any item and tap the bookmark icon to save it permanently. Saved items survive history clears.</p>
     </div>
-    <div class="feat">
-      <div class="feat-icon">🔍</div>
-      <h3>Instant Search</h3>
-      <p>Type to filter your entire history in real time. Find that API key you copied an hour ago in under a second.</p>
-    </div>
-    <div class="feat">
-      <div class="feat-icon">🖥️</div>
-      <h3>Multi-Display</h3>
-      <p>The snip overlay spans every connected display. Capture content from any screen, any arrangement.</p>
-    </div>
-    <div class="feat">
-      <div class="feat-icon">🔒</div>
+
+    <!-- Single: Privacy -->
+    <div class="bento-card">
+      <div class="bento-icon">🔒</div>
       <h3>100% Private</h3>
       <p>All clipboard data lives in memory, on your machine only. No accounts, no cloud sync, no analytics. Ever.</p>
+    </div>
+
+    <!-- Wide card: Instant search -->
+    <div class="bento-card bento-wide">
+      <div class="bento-icon">🔍</div>
+      <h3>Instant Full-Text Search</h3>
+      <p>Type to filter your entire history in real time. Find that API key you copied an hour ago in under a second — across all 50 items simultaneously.</p>
+      <div class="bento-demo">
+        <span class="demo-line"><span class="cm">Search: </span><span class="str">"api.github"</span> → 3 matches found</span>
+        <span class="demo-line"><span class="cm">https://api.github.com/repos/acme/core</span></span>
+      </div>
     </div>
   </div>
 
   <!-- Snip spotlight -->
   <div class="spotlight reveal">
     <div class="spot-visual" aria-hidden="true">
-      <div class="spot-bg"></div>
-      <div class="spot-code">
-        function processData(input) {<br/>
-        &nbsp;&nbsp;const res = transform(input);<br/>
-        &nbsp;&nbsp;return validate(res);<br/>
-        }<br/><br/>
-        export default processData;
+      <div class="spot-code-bg">
+        <span class="kw">function</span> <span class="fn">processData</span>(<span class="pn">input</span>) {<br>
+        &nbsp;&nbsp;<span class="kw">const</span> res = <span class="fn">transform</span>(input);<br>
+        &nbsp;&nbsp;<span class="kw">return</span> <span class="fn">validate</span>(res);<br>
+        }<br><br>
+        <span class="kw">export</span> <span class="kw">default</span> processData;
       </div>
       <div class="spot-overlay"></div>
       <div class="spot-sel">
@@ -946,11 +1511,11 @@
         <span class="spot-corner br"></span>
       </div>
       <div class="spot-dims">374 × 194</div>
-      <div class="spot-hint">Drag to select any region · Esc to cancel</div>
+      <div class="spot-hint">Drag to select · Esc to cancel</div>
     </div>
 
     <div class="spot-text">
-      <h3>Snip anything.<br/>Paste immediately.</h3>
+      <h3>Snip anything.<br>Paste immediately.</h3>
       <p>Hit <strong>Snip</strong> inside the clipboard panel. A full-screen overlay appears on every connected display — drag to select any region.</p>
       <ul class="check-list">
         <li>Live pixel dimension readout as you drag</li>
@@ -965,14 +1530,14 @@
 
 <!-- ─── How it works ──────────────────────────────────────────── -->
 <section class="section how-wrap" id="how" style="padding-top:0">
-  <div class="section-eyebrow">How it works</div>
+  <div class="eyebrow">How it works</div>
   <h2 class="section-heading">Running in under a minute.</h2>
 
   <div class="steps reveal">
     <div class="step">
       <div class="step-num">01</div>
       <h3>Download &amp; run</h3>
-      <p>Double-click the <code style="font-family:var(--mono);font-size:.73rem;color:var(--text-2)">.app</code>. maClip lives in the menu bar — no Dock icon, no splash screen.</p>
+      <p>Double-click the <code>.app</code>. maClip lives in your menu bar — no Dock icon, no splash screen.</p>
     </div>
     <div class="step">
       <div class="step-num">02</div>
@@ -982,7 +1547,7 @@
     <div class="step">
       <div class="step-num">03</div>
       <h3>Copy as usual</h3>
-      <p>Use your Mac normally. maClip tracks every copy in the background. Zero friction, zero slowdown.</p>
+      <p>Use your Mac normally. maClip tracks every copy silently in the background. Zero friction, zero slowdown.</p>
     </div>
     <div class="step">
       <div class="step-num">04</div>
@@ -993,8 +1558,8 @@
 </section>
 
 <!-- ─── Testimonials ──────────────────────────────────────────── -->
-<section class="section t-wrap" style="padding-top:0">
-  <div class="section-eyebrow">Testimonials</div>
+<section class="section" style="padding-top:0">
+  <div class="eyebrow">Testimonials</div>
   <h2 class="section-heading">Loved by people who copy things.</h2>
 
   <div class="t-grid reveal">
@@ -1035,95 +1600,98 @@
 </section>
 
 <!-- ─── Pricing ───────────────────────────────────────────────── -->
-<section class="section price-wrap-outer" id="pricing" style="padding-top:0">
-  <div class="section-eyebrow">Pricing</div>
-  <h2 class="section-heading">Simple, honest pricing.</h2>
-  <p class="section-sub">One payment. Yours forever. No subscriptions, no upsells, no nonsense.</p>
+<div class="price-outer" id="pricing">
+  <section class="section">
+    <div class="eyebrow">Pricing</div>
+    <h2 class="section-heading">Simple, honest pricing.</h2>
+    <p class="section-sub">One payment. Yours forever. No subscriptions, no upsells, no nonsense.</p>
 
-  <div class="price-center reveal">
-    <div class="price-card">
-      <div class="price-badge">
-        <span class="price-badge-dot"></span>
-        Best value
+    <div class="price-center reveal">
+      <div class="price-card">
+        <div class="price-badge">
+          <span class="price-badge-dot"></span>
+          Best value
+        </div>
+        <div class="price-name">maClip for macOS</div>
+        <div class="price-amount">
+          <span class="price-curr">$</span>
+          <span class="price-num">5</span>
+        </div>
+        <p class="price-period">one-time payment · lifetime updates included</p>
+        <ul class="price-items">
+          <li><span class="pi-check">✓</span> Clipboard history (50 items)</li>
+          <li><span class="pi-check">✓</span> Global ⌘ Shift V shortcut</li>
+          <li><span class="pi-check">✓</span> Built-in screen capture / snip tool</li>
+          <li><span class="pi-check">✓</span> Multi-display snipping</li>
+          <li><span class="pi-check">✓</span> Instant text search</li>
+          <li><span class="pi-check">✓</span> Save items forever (bookmarks)</li>
+          <li><span class="pi-check">✓</span> Text &amp; image support</li>
+          <li><span class="pi-check">✓</span> 100% on-device — no cloud</li>
+          <li><span class="pi-check">✓</span> Native Swift · macOS 13 Ventura+</li>
+          <li><span class="pi-check">✓</span> All future updates</li>
+        </ul>
+        <a href="#" class="btn-buy">Buy maClip — $5 →</a>
+        <p class="price-note">Secure checkout · Instant download · macOS only</p>
       </div>
-      <div class="price-name">maClip for macOS</div>
-      <div class="price-amount">
-        <span class="price-curr">$</span>
-        <span class="price-num">5</span>
-      </div>
-      <p class="price-period">one-time payment · lifetime updates included</p>
-      <ul class="price-items">
-        <li><span class="pi-check">✓</span> Clipboard history (50 items)</li>
-        <li><span class="pi-check">✓</span> Global ⌘ Shift V shortcut</li>
-        <li><span class="pi-check">✓</span> Built-in screen capture / snip tool</li>
-        <li><span class="pi-check">✓</span> Multi-display snipping</li>
-        <li><span class="pi-check">✓</span> Instant text search</li>
-        <li><span class="pi-check">✓</span> Text &amp; image support</li>
-        <li><span class="pi-check">✓</span> 100% on-device — no cloud</li>
-        <li><span class="pi-check">✓</span> Native Swift · macOS 13 Ventura+</li>
-        <li><span class="pi-check">✓</span> All future updates</li>
-      </ul>
-      <a href="#" class="btn-buy">Buy maClip — $5 →</a>
-      <p class="price-note">Secure checkout · Instant download · macOS only</p>
     </div>
-  </div>
-</section>
+  </section>
+</div>
 
 <!-- ─── FAQ ───────────────────────────────────────────────────── -->
-<section class="section faq-wrap" id="faq" style="padding-top:0">
-  <div class="section-eyebrow">FAQ</div>
+<section class="section" id="faq" style="padding-top:80px">
+  <div class="eyebrow">FAQ</div>
   <h2 class="section-heading">Common questions.</h2>
 
   <div class="faq-list reveal">
     <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
+      <button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">
         What macOS version do I need?
-        <span class="faq-icon">+</span>
+        <span class="faq-icon" aria-hidden="true">+</span>
       </button>
-      <div class="faq-a">maClip requires macOS 13 Ventura or later. It is a native Swift app that uses modern macOS APIs not available in older versions.</div>
+      <div class="faq-a" role="region">maClip requires macOS 13 Ventura or later. It is a native Swift app that uses modern macOS APIs not available in older versions.</div>
     </div>
     <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
+      <button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">
         Why does it need Accessibility &amp; Screen Recording permissions?
-        <span class="faq-icon">+</span>
+        <span class="faq-icon" aria-hidden="true">+</span>
       </button>
-      <div class="faq-a">Accessibility permission is required to intercept the global ⌘ Shift V shortcut from any app — this is a macOS requirement for all global hotkeys. Screen Recording is required for the Snip tool to capture screen regions. maClip never sends any data anywhere; both permissions are used entirely on-device.</div>
+      <div class="faq-a" role="region">Accessibility permission is required to intercept the global ⌘ Shift V shortcut from any app — this is a macOS requirement for all global hotkeys. Screen Recording is required for the Snip tool to capture screen regions. maClip never sends any data anywhere; both permissions are used entirely on-device.</div>
     </div>
     <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
+      <button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">
         Is my clipboard data stored or transmitted anywhere?
-        <span class="faq-icon">+</span>
+        <span class="faq-icon" aria-hidden="true">+</span>
       </button>
-      <div class="faq-a">No. maClip holds your clipboard history in memory only. It is cleared when you quit or click "Clear All". Nothing is written to disk, synced to a server, or sent anywhere, ever.</div>
+      <div class="faq-a" role="region">No. maClip holds your clipboard history in memory only. It is cleared when you quit or click "Clear History". Nothing is written to disk, synced to a server, or sent anywhere, ever.</div>
     </div>
     <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
+      <button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">
         Will it slow my Mac down?
-        <span class="faq-icon">+</span>
+        <span class="faq-icon" aria-hidden="true">+</span>
       </button>
-      <div class="faq-a">No. maClip uses under 5 MB of RAM and polls the clipboard every 0.5 seconds — negligible CPU overhead. It is a native Swift app with no background processes beyond a single timer.</div>
+      <div class="faq-a" role="region">No. maClip uses under 5 MB of RAM and polls the clipboard every 0.5 seconds — negligible CPU overhead. It is a native Swift app with no background processes beyond a single timer.</div>
     </div>
     <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
+      <button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">
         Can I use it on multiple Macs?
-        <span class="faq-icon">+</span>
+        <span class="faq-icon" aria-hidden="true">+</span>
       </button>
-      <div class="faq-a">Yes. One $5 purchase covers personal use on all your own Macs. Download and run the app on each machine — no license keys or activation required.</div>
+      <div class="faq-a" role="region">Yes. One $5 purchase covers personal use on all your own Macs. Download and run the app on each machine — no license keys or activation required.</div>
     </div>
     <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
+      <button class="faq-q" aria-expanded="false" onclick="toggleFaq(this)">
         Why isn't it on the Mac App Store?
-        <span class="faq-icon">+</span>
+        <span class="faq-icon" aria-hidden="true">+</span>
       </button>
-      <div class="faq-a">The global keyboard shortcut (CGEventTap) and screen capture APIs maClip relies on require running outside Apple's App Sandbox. App Sandbox restrictions in the Mac App Store prevent these capabilities, so maClip is distributed as a direct download only.</div>
+      <div class="faq-a" role="region">The global keyboard shortcut (CGEventTap) and screen capture APIs maClip relies on require running outside Apple's App Sandbox. App Sandbox restrictions in the Mac App Store prevent these capabilities, so maClip is distributed as a direct download only.</div>
     </div>
   </div>
 </section>
 
 <!-- ─── CTA ───────────────────────────────────────────────────── -->
 <div class="cta-outer reveal">
-  <div class="cta-banner">
-    <h2>Stop losing what you copy.</h2>
+  <div class="cta-inner">
+    <h2>Stop losing<br>what you copy.</h2>
     <p>Join developers and designers who've made maClip part of their daily workflow.</p>
     <a href="#pricing" class="btn-white">
       Get maClip for $5
@@ -1148,92 +1716,130 @@
 </footer>
 
 <script>
-/* ─── Animated clipboard feed ────────────────────────────── */
+/* ─── Animated clipboard feed ─────────────────────────────── */
 const CLIPS = [
-  { type: 'code', badge: 'code', content: 'const handleSubmit = async (e) => {',  app: 'Cursor'   },
-  { type: 'url',  badge: 'url',  content: 'https://api.github.com/users/acme',     app: 'Chrome'   },
-  { type: 'img',  badge: 'img',  content: '[Screenshot — Figma frame]',            app: 'Figma'    },
-  { type: 'text', badge: 'text', content: "Meeting at 3pm — don't forget slides",  app: 'Notes'    },
-  { type: 'code', badge: 'code', content: 'sk-prod-xK8mN2pL4qR9vW3eA7bC1dF6',     app: 'Cursor'   },
-  { type: 'text', badge: 'text', content: 'john.doe@acme.io',                       app: 'Mail'     },
-  { type: 'url',  badge: 'url',  content: 'https://linear.app/team/ENG-4821',       app: 'Safari'   },
-  { type: 'code', badge: 'code', content: 'border-radius: 12px; overflow: hidden;', app: 'VS Code'  },
-  { type: 'img',  badge: 'img',  content: '[Screenshot — Dashboard chart]',         app: 'Chrome'   },
-  { type: 'text', badge: 'text', content: '+1 (555) 867-5309',                      app: 'Contacts' },
+  { icon: '⌨️', text: 'const handleSubmit = async (e) => {',    time: 'just now' },
+  { icon: '🔗', text: 'https://api.github.com/users/acme',       time: '1m ago'   },
+  { icon: '🖼', text: '[Screenshot — Figma frame]',              time: '2m ago'   },
+  { icon: '📝', text: "Meeting at 3pm — don't forget slides",    time: '4m ago'   },
+  { icon: '⌨️', text: 'sk-prod-xK8mN2pL4qR9vW3eA7bC1dF6',      time: '6m ago'   },
+  { icon: '📝', text: 'john.doe@acme.io',                         time: '9m ago'   },
+  { icon: '🔗', text: 'https://linear.app/team/ENG-4821',         time: '11m ago'  },
+  { icon: '⌨️', text: 'border-radius: 12px; overflow: hidden;',  time: '14m ago'  },
+  { icon: '📝', text: '+1 (555) 867-5309',                        time: '18m ago'  },
+  { icon: '🖼', text: '[Screenshot — Dashboard chart]',           time: '22m ago'  },
 ];
-const ICONS = { code: '⌨', url: '🔗', img: '🖼', text: '📝' };
-const TIMES = ['just now', '1m ago', '3m ago', '6m ago', '12m ago'];
 
-let clipCursor = 0;
+let cursor = 0;
 
-function makeItem(clip, idx) {
-  const div = document.createElement('div');
-  div.className = 'clip-item' + (idx === 0 ? ' is-top' : '');
-  div.innerHTML =
-    `<div class="clip-thumb ${clip.type}">${ICONS[clip.type]}</div>` +
+function makeClipEl(clip, dimmed) {
+  const el = document.createElement('div');
+  el.className = 'clip-item' + (dimmed ? '' : ' highlight');
+  el.innerHTML =
+    `<div class="clip-icon">${clip.icon}</div>` +
     `<div class="clip-body">` +
-      `<div class="clip-main">${clip.content}</div>` +
-      `<div class="clip-meta">${TIMES[Math.min(idx, TIMES.length - 1)]} · ${clip.app}</div>` +
-    `</div>` +
-    `<span class="clip-badge badge-${clip.badge}">${clip.badge}</span>`;
-  return div;
+      `<div class="clip-text">${clip.text}</div>` +
+      `<div class="clip-time">${clip.time}</div>` +
+    `</div>`;
+  return el;
 }
 
 function initFeed() {
   const list = document.getElementById('clipList');
   list.innerHTML = '';
-  CLIPS.slice(0, 5).forEach((c, i) => list.appendChild(makeItem(c, i)));
+  for (let i = 0; i < 5; i++) {
+    list.appendChild(makeClipEl(CLIPS[i], i !== 0));
+  }
 }
 
 function tickFeed() {
   const list = document.getElementById('clipList');
-  clipCursor = (clipCursor + 1) % CLIPS.length;
 
+  // Remove last item
   const last = list.lastElementChild;
   if (last) {
-    last.style.transition = 'opacity .22s, transform .22s';
+    last.style.transition = 'opacity .2s, transform .2s';
     last.style.opacity = '0';
-    last.style.transform = 'translateX(8px)';
-    setTimeout(() => last.remove(), 220);
+    last.style.transform = 'translateX(10px)';
+    setTimeout(() => { if (last.parentNode) last.remove(); }, 200);
   }
 
-  const el = makeItem(CLIPS[clipCursor], 0);
+  // Add new item at top
+  cursor = (cursor + 1) % CLIPS.length;
+  const el = makeClipEl(CLIPS[cursor], false);
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(-8px)';
   list.insertBefore(el, list.firstChild);
 
-  setTimeout(() => {
-    list.querySelectorAll('.clip-item').forEach((item, i) => {
-      item.classList.toggle('is-top', i === 0);
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      el.style.transition = 'opacity .25s, transform .25s';
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
     });
+  });
+
+  // Dim newly second item
+  setTimeout(() => {
+    const items = list.querySelectorAll('.clip-item');
+    items.forEach((item, i) => {
+      item.classList.toggle('highlight', i === 0);
+    });
+    // Update count label
+    const countEl = document.getElementById('winCount');
+    const badgeEl = document.getElementById('winBadge');
+    const n = Math.min(list.children.length, 50);
+    if (countEl) countEl.textContent = n + ' item' + (n === 1 ? '' : 's');
+    if (badgeEl) badgeEl.textContent = n;
   }, 50);
 }
 
 initFeed();
 setInterval(tickFeed, 2600);
 
-/* ─── FAQ accordion ──────────────────────────────────────── */
+/* ─── FAQ accordion ────────────────────────────────────────── */
 function toggleFaq(btn) {
   const item = btn.closest('.faq-item');
   const isOpen = item.classList.contains('open');
-  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
-  if (!isOpen) item.classList.add('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => {
+    i.classList.remove('open');
+    i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+  });
+  if (!isOpen) {
+    item.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+  }
 }
 
-/* ─── Scroll reveal ──────────────────────────────────────── */
-const observer = new IntersectionObserver(
-  entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
-  { threshold: 0.1 }
+/* ─── Scroll reveal ────────────────────────────────────────── */
+const revealObserver = new IntersectionObserver(
+  entries => entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObserver.unobserve(e.target);
+    }
+  }),
+  { threshold: 0.08 }
 );
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-/* ─── Active nav highlight ───────────────────────────────── */
-const navSections = document.querySelectorAll('section[id]');
-window.addEventListener('scroll', () => {
+/* ─── Active nav highlight ─────────────────────────────────── */
+const navSections = document.querySelectorAll('section[id], div[id]');
+const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+
+function updateActiveNav() {
   let current = '';
-  navSections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
-  document.querySelectorAll('.nav-links a[href^="#"]').forEach(a => {
-    a.style.color = a.getAttribute('href') === '#' + current ? 'var(--text)' : '';
+  navSections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) current = s.id;
   });
-}, { passive: true });
+  navLinks.forEach(a => {
+    const active = a.getAttribute('href') === '#' + current;
+    a.classList.toggle('active', active && !a.classList.contains('btn-nav'));
+  });
+}
+
+window.addEventListener('scroll', updateActiveNav, { passive: true });
+updateActiveNav();
 </script>
 </body>
 </html>

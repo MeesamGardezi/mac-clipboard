@@ -304,10 +304,10 @@ struct ClipboardItemRow: View {
                         Text(item.content.previewText)
                             .lineLimit(item.isImage ? 1 : 2)
                             .font(.system(size: 12.5))
-                            .foregroundStyle(Color(red: 17/255, green: 17/255, blue: 17/255))
+                            .foregroundStyle(Color.mcText)
                         Text(item.timeAgoString)
                             .font(.system(size: 10.5))
-                            .foregroundStyle(Color(red: 154/255, green: 154/255, blue: 154/255))
+                            .foregroundStyle(Color.mcText3)
                     }
                     Spacer(minLength: isHovered ? 28 : 0)
                 }
@@ -324,8 +324,8 @@ struct ClipboardItemRow: View {
                         .font(.system(size: 12.5, weight: .medium))
                         .foregroundStyle(
                             item.isSaved
-                                ? Color(red: 1.0, green: 92/255, blue: 0)
-                                : Color(red: 154/255, green: 154/255, blue: 154/255)
+                                ? Color.mcAccent
+                                : Color.mcText3
                         )
                         .frame(width: 32, height: 32)
                 }
@@ -338,7 +338,7 @@ struct ClipboardItemRow: View {
         .background(
             isHovered
                 ? (item.isSaved
-                    ? Color(red: 1.0, green: 92/255, blue: 0).opacity(0.05)
+                    ? Color.mcAccent.opacity(0.05)
                     : Color.black.opacity(0.04))
                 : Color.clear
         )
@@ -356,11 +356,11 @@ struct ClipboardItemRow: View {
         } else {
             ZStack {
                 RoundedRectangle(cornerRadius: 5)
-                    .fill(Color(red: 237/255, green: 236/255, blue: 232/255))
+                    .fill(Color.mcSurface2)
                     .frame(width: 44, height: 36)
                 Image(systemName: "doc.text")
                     .font(.system(size: 15))
-                    .foregroundStyle(Color(red: 90/255, green: 90/255, blue: 90/255))
+                    .foregroundStyle(Color.mcText2)
             }
         }
     }

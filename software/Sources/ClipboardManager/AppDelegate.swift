@@ -60,7 +60,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                      action: #selector(clearHistory),
                      keyEquivalent: "")
         menu.addItem(.separator())
-        menu.addItem(withTitle: "Quit ClipboardManager",
+        menu.addItem(withTitle: "Quit maClip",
                      action: #selector(NSApplication.terminate(_:)),
                      keyEquivalent: "q")
         statusItem?.menu = menu

@@ -12,6 +12,10 @@ import CoreGraphics
 
 final class HotkeyManager {
     private static var onHotkey: (() -> Void)?
+    /// Stored statically so the C-style CGEventTapCallBack can reach it
+    /// without capturing state (C callbacks cannot close over Swift values).
+    private static var activeTap: CFMachPort?
+
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
     private var permissionTimer: Timer?
@@ -57,7 +61,7 @@ final class HotkeyManager {
     private func startPermissionPolling() {
         guard permissionTimer == nil else { return }
 
-        permissionTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
+        let timer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
             guard let self else { return }
             if AXIsProcessTrusted() {
                 if self.createEventTap() {
@@ -67,7 +71,8 @@ final class HotkeyManager {
             }
         }
         // Ensure the timer fires even during UI tracking (e.g. menu open)
-        RunLoop.main.add(permissionTimer!, forMode: .common)
+        RunLoop.main.add(timer, forMode: .common)
+        permissionTimer = timer
     }
 
     // MARK: Private – Permissions
@@ -89,13 +94,15 @@ final class HotkeyManager {
             (1 << CGEventType.tapDisabledByTimeout.rawValue)
         )
 
-        let callback: CGEventTapCallBack = { proxy, type, event, refcon -> Unmanaged<CGEvent>? in
+        // Note: CGEventTapCallBack is a C function type — it cannot capture
+        // Swift variables. All shared state must go through static properties.
+        let callback: CGEventTapCallBack = { _, type, event, _ -> Unmanaged<CGEvent>? in
 
-            // Re-enable the tap if macOS disabled it due to timeout
+            // Re-enable the tap if macOS disabled it due to timeout.
+            // We access the tap through the static property instead of refcon
+            // so there is no ambiguity about which tap to re-enable.
             if type == .tapDisabledByTimeout {
-                if let refcon {
-                    let tap = Unmanaged<AnyObject>.fromOpaque(refcon)
-                        .takeUnretainedValue() as! CFMachPort
+                if let tap = HotkeyManager.activeTap {
                     CGEvent.tapEnable(tap: tap, enable: true)
                 }
                 return Unmanaged.passUnretained(event)
@@ -133,28 +140,15 @@ final class HotkeyManager {
             return false
         }
 
-        // Store the tap, then pass it as userInfo via a second tap so the
-        // callback can re-enable on timeout. We invalidate the first tap
-        // since we only need the second.
-        let tapPointer = Unmanaged<CFMachPort>.passUnretained(tap).toOpaque()
-        CFMachPortInvalidate(tap)
+        // Publish the tap before enabling it so any immediate tapDisabledByTimeout
+        // event (extremely rare at creation time) still finds a valid reference.
+        HotkeyManager.activeTap = tap
 
-        guard let tapFinal = CGEvent.tapCreate(
-            tap: .cgSessionEventTap,
-            place: .headInsertEventTap,
-            options: .defaultTap,
-            eventsOfInterest: mask,
-            callback: callback,
-            userInfo: tapPointer
-        ) else {
-            return false
-        }
-
-        let src = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tapFinal, 0)
+        let src = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0)
         CFRunLoopAddSource(CFRunLoopGetMain(), src, .commonModes)
-        CGEvent.tapEnable(tap: tapFinal, enable: true)
+        CGEvent.tapEnable(tap: tap, enable: true)
 
-        eventTap = tapFinal
+        eventTap = tap
         runLoopSource = src
         return true
     }
@@ -169,5 +163,6 @@ final class HotkeyManager {
             CFMachPortInvalidate(tap)
             eventTap = nil
         }
+        HotkeyManager.activeTap = nil
     }
 }
