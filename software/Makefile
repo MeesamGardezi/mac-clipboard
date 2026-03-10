@@ -4,7 +4,8 @@ BUNDLE    = $(APP)/Contents
 MACOS_DIR = $(BUNDLE)/MacOS
 RES_DIR   = $(BUNDLE)/Resources
 PLIST_SRC = Sources/ClipboardManager/Resources/Info.plist
-SIGN_ID   = -   # ad-hoc signing; replace with your Developer ID for distribution
+# Ad-hoc signing; replace with your Developer ID for distribution
+SIGN_ID   = -
 
 DMG_NAME  = maClip
 
