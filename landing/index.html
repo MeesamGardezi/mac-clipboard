@@ -138,9 +138,33 @@
 
     .hero-sub {
       font-size: 1.05rem; color: var(--text-2); line-height: 1.72;
-      max-width: 430px; margin-bottom: 36px;
+      max-width: 430px; margin-bottom: 24px;
     }
     .hero-sub strong { color: var(--text); }
+
+    .hero-stats {
+      display: flex; align-items: center; gap: 0;
+      margin-bottom: 32px;
+      background: var(--bg-1);
+      border: 1px solid var(--border-2);
+      border-radius: 10px;
+      overflow: hidden;
+      width: fit-content;
+    }
+    .hero-stat {
+      padding: 10px 22px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+    .hero-stat:last-child { border-right: none; }
+    .hero-stat-num {
+      font-size: 1.35rem; font-weight: 800; letter-spacing: -.04em;
+      color: var(--accent); line-height: 1;
+    }
+    .hero-stat-label {
+      font-size: .65rem; font-weight: 600; color: var(--text-3);
+      text-transform: uppercase; letter-spacing: .07em; margin-top: 3px;
+    }
 
     .hero-cta { display: flex; gap: 11px; flex-wrap: wrap; margin-bottom: 22px; }
 
@@ -711,8 +735,9 @@
     .hero-tag      { animation-delay: 0s; }
     .hero-headline { animation-delay: .07s; }
     .hero-sub      { animation-delay: .13s; }
-    .hero-cta      { animation-delay: .19s; }
-    .hero-trust    { animation-delay: .24s; }
+    .hero-stats    { animation-delay: .17s; }
+    .hero-cta      { animation-delay: .22s; }
+    .hero-trust    { animation-delay: .28s; }
     .hero-visual   { animation: fadeUp .65s .28s ease both; }
 
     @media (max-width: 600px) {
@@ -756,6 +781,21 @@
       <strong>Text, code, images</strong> — all within reach with one shortcut.
       Zero cloud, zero subscription.
     </p>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">50</div>
+        <div class="hero-stat-label">items tracked</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">&lt;5 MB</div>
+        <div class="hero-stat-label">memory use</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">$5</div>
+        <div class="hero-stat-label">one-time · forever</div>
+      </div>
+    </div>
 
     <div class="hero-cta">
       <a href="#pricing" class="btn-primary">

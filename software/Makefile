@@ -6,7 +6,9 @@ RES_DIR   = $(BUNDLE)/Resources
 PLIST_SRC = Sources/ClipboardManager/Resources/Info.plist
 SIGN_ID   = -   # ad-hoc signing; replace with your Developer ID for distribution
 
-.PHONY: build app run clean
+DMG_NAME  = maClip
+
+.PHONY: build app run dmg clean
 
 build:
 	swift build -c release 2>&1
@@ -21,6 +23,12 @@ app: build
 
 run: app
 	@open "$(APP)"
+
+dmg: app
+	@echo "→ Creating $(DMG_NAME).dmg..."
+	@rm -f "$(DMG_NAME).dmg"
+	@hdiutil create -volname "$(DMG_NAME)" -srcfolder "$(APP)" -ov -format UDZO "$(DMG_NAME).dmg"
+	@echo "✓ $(DMG_NAME).dmg ready"
 
 clean:
 	@rm -rf .build "$(APP)"
