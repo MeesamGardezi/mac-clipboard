@@ -29,6 +29,7 @@ struct ClipboardHistoryView: View {
     @State private var searchText = ""
     @State private var hoveredID: UUID?
     @State private var activeTab: AppTab = .history
+    @State private var showCopied = false
 
     private var filteredHistory: [ClipboardItem] {
         guard !searchText.isEmpty else { return monitor.history }
@@ -56,6 +57,24 @@ struct ClipboardHistoryView: View {
         }
         .frame(width: 400, height: 540)
         .background(Color.mcBg)
+        .overlay(alignment: .bottom) {
+            if showCopied {
+                HStack(spacing: 6) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 13, weight: .semibold))
+                    Text("Copied!")
+                        .font(.system(size: 13, weight: .semibold))
+                }
+                .foregroundStyle(.white)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 9)
+                .background(Color.mcAccent, in: RoundedRectangle(cornerRadius: 20))
+                .shadow(color: .black.opacity(0.18), radius: 8, y: 3)
+                .padding(.bottom, 48)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(.spring(response: 0.28, dampingFraction: 0.8), value: showCopied)
     }
 
     // MARK: Header
@@ -192,7 +211,14 @@ struct ClipboardHistoryView: View {
                             item: item,
                             isHovered: hoveredID == item.id,
                             onHover:      { hoveredID = $0 ? item.id : nil },
-                            onSelect:     { monitor.copyToClipboard(item); onDismiss() },
+                            onSelect:     {
+                                monitor.copyToClipboard(item)
+                                withAnimation { showCopied = true }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
+                                    withAnimation { showCopied = false }
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { onDismiss() }
+                                }
+                            },
                             onToggleSave: { item.isSaved ? monitor.unsave(item) : monitor.save(item) }
                         )
                         rule.padding(.leading, 58)
